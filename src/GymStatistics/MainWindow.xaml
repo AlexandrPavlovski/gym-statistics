@@ -8,10 +8,29 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Button Click="Button_Click" Margin="0,10,9.6,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Right" Width="200">Загрузить данные</Button>
-        <ComboBox x:Name="combosComboBox" Margin="10,146,9.6,0" Height="22" VerticalAlignment="Top"/>
         <Label Content="ID экселины:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="sheetIdInput" Height="26" Margin="113,10,214.6,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <ComboBox x:Name="dayOfWeekComboBox" Margin="113,44,9.6,0" VerticalAlignment="Top" SelectionChanged="DayOfWeekComboBox_SelectionChanged"/>
+        <ComboBox x:Name="dayOfWeekComboBox" Margin="113,44,214.6,0" VerticalAlignment="Top" SelectionChanged="DayOfWeekComboBox_SelectionChanged"/>
         <Label Content="День недели:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
+        <Label Content="Дата:" Margin="0,41,171.6,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="38"/>
+        <TextBox x:Name="dateTexBox" Height="26" Margin="0,41,10.6,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="161"/>
+
+        <Rectangle Fill="Blue" Margin="10,81,9.6,0" Height="1" VerticalAlignment="Top"/>
+
+        <Label Content="Предыдущая тренировка:" HorizontalAlignment="Left" Margin="10,87,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="previousTrainingIterationsTexBox" Height="26" Margin="173,87,214.6,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBox x:Name="previousTrainingFeelingTexBox" Height="26" Margin="0,87,10.6,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="199"/>
+
+        <Label Content="Комбо:" HorizontalAlignment="Left" Margin="10,159,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="combosComboBox" Margin="113,163,10.6,0" Height="22" VerticalAlignment="Top"/>
+        <Label Content="Упражнение:" HorizontalAlignment="Left" Margin="10,190,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="exersizeComboBox1" Margin="113,194,214.6,0" Height="22" VerticalAlignment="Top"/>
+        <TextBox x:Name="plannedApproachesTexBox" Height="22" Margin="0,194,108.6,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="101"/>
+        <TextBox x:Name="plannedWeightTexBox" Height="22" Margin="0,194,9.6,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="94"/>
+
+        <Label Content="Упражнение:" HorizontalAlignment="Left" Margin="8,221,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="exersiseComboBox2" Margin="113,225,214.6,0" Height="22" VerticalAlignment="Top"/>
+
+
     </Grid>
 </Window>

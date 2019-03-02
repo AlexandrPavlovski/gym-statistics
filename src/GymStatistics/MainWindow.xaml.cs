@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GymStatistics.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,25 @@ namespace GymStatistics
     public partial class MainWindow : Window
     {
         private GoogleApiClient gac;
-        private List<TrainingDay> trainingDays;
+        private TrainingDay[] trainingDays;
+        private Dictionary<string, string[]> dayComboLookup = new Dictionary<string, string[]>
+        {
+            { "Понедельник", new[]
+                {
+                    ""
+                }
+            },
+            { "Среда",new[]
+                {
+                    ""
+                }
+            },
+            { "Пятница",new[]
+                {
+                    ""
+                }
+            }
+        };
 
         public MainWindow()
         {
@@ -38,12 +57,14 @@ namespace GymStatistics
                 sheetId = "1o9ecJKUtohwqReFGgHq5IeFwAwJuZAXrQNkmQ-Hn6Fc";
             }
 
-            trainingDays = await gac.GetSheetDataAsync(sheetId);
+            var sheetsService = await gac.GetSheetsServiceAsync();
+            var processor = SheetDataProcessor.Build(sheetsService, sheetId);
+            trainingDays = processor.TrainingDays;
 
             var combos = trainingDays.SelectMany(x => x.Combos).GroupBy(x => x.Name);
 
             combosComboBox.ItemsSource = combos.Select(x => x.Key).OrderBy(x => x);
-            dayOfWeekComboBox.ItemsSource = new[] { "Понедельник", "Среда", "Пятница" };
+            dayOfWeekComboBox.ItemsSource = dayComboLookup.Keys;
             dayOfWeekComboBox.SelectedIndex = 0;
         }
 
