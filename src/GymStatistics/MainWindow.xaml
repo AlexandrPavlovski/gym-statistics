@@ -31,6 +31,8 @@
         <Label Content="Упражнение:" HorizontalAlignment="Left" Margin="8,221,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="exersiseComboBox2" Margin="113,225,214.6,0" Height="22" VerticalAlignment="Top"/>
 
-
+        <StackPanel Margin="10,263,9.6,0">
+            <local:ComboView />
+        </StackPanel>
     </Grid>
 </Window>

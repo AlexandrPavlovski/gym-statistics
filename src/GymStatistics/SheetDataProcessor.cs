@@ -12,9 +12,10 @@ namespace GymStatistics
 {
     class SheetDataProcessor
     {
-        public TrainingDay[] TrainingDays;
-        public ExerciseCombo[] AllCombos;
-        public Dictionary<string, string[]> AllExercises;
+        public TrainingDay[] TrainingDays { get; set; }
+        public Dictionary<string, ExerciseCombo> AllCombos { get; set; }
+        public Dictionary<string, string[]> AllExercises { get; set; }
+        public Dictionary<DayOfWeek, string[]> DayMusclesLookup { get; set; }
 
         private SheetsService _sheetsService;
         private string _spreadsheetId;
@@ -29,6 +30,7 @@ namespace GymStatistics
             processor.BuildTrainingDays();
             processor.BuildAllCombos();
             processor.BuildAllExercises();
+            processor.BuildDayMusclesLookup();
 
             return processor;
         }
@@ -46,14 +48,18 @@ namespace GymStatistics
             {
                 TrainingDay day = null;
                 ExerciseCombo combo = null;
+                int comboOrder = 0;
+                int exerciseOrder = 0;
                 var rows = values.ValueRanges.First(x => x.Range.Contains(sheet.Title)).Values;
                 for (int i = 0; i < rows.Count; i++)
                 {
                     if (sheet.TrainingDayNumberRowIndices.Contains(i))
                     {
+                        comboOrder = 0;
                         day = new TrainingDay
                         {
-                            Number = rows[i][0].ToString()
+                            Number = rows[i][0].ToString(),
+                            Date = DateTime.Parse(rows[i + 2][7].ToString())
                         };
                         trainingDays.Add(day);
                         continue;
@@ -66,19 +72,29 @@ namespace GymStatistics
                             combo.Muscles = combo.Muscles.GroupBy(x => x).Select(x => x.Key).ToList();
                         }
 
+                        exerciseOrder = 0;
                         combo = new ExerciseCombo
                         {
-                            Name = rows[i][0].ToString()
+                            Name = rows[i][0].ToString(),
+                            Order = comboOrder++
                         };
                         day.Combos.Add(combo);
                         continue;
                     }
 
-                    combo.Exercises.Add(new Exercise
+                    var exercise = new Exercise
                     {
                         Name = rows[i][0].ToString(),
-                        Muscle = rows[i][1].ToString()
-                    });
+                        Muscle = rows[i][1].ToString(),
+                        Rest = rows[i][2].ToString(),
+                        Repetitions = rows[i][3].ToString(),
+                        Work = rows[i][4].ToString(),
+                        Plan = rows[i][5].ToString(),
+                        Date = day.Date,
+                        Feeling = rows[i][8].ToString(),
+                        Order = exerciseOrder++
+                    };
+                    combo.Exercises.Add(exercise);
                     combo.Muscles.Add(rows[i][1].ToString());
                 }
             }
@@ -158,7 +174,7 @@ namespace GymStatistics
                 allCombos.Add(trueCombo);
             }
 
-            AllCombos = allCombos.ToArray();
+            AllCombos = allCombos.ToDictionary(x => x.Name, x => x);
         }
 
         private void BuildAllExercises()
@@ -168,6 +184,39 @@ namespace GymStatistics
                 .SelectMany(x => x.Exercises)
                 .GroupBy(x => x.Muscle)
                 .ToDictionary(x => x.Key, x => x.GroupBy(y => y.Name).Select(y => y.Key).ToArray());
+        }
+
+        private void BuildDayMusclesLookup()
+        {
+            var groupsOfDays = TrainingDays
+                .Where(x => x.Date.DayOfWeek == DayOfWeek.Monday
+                    || x.Date.DayOfWeek == DayOfWeek.Wednesday
+                    || x.Date.DayOfWeek == DayOfWeek.Friday)
+                .GroupBy(x => x.Date.DayOfWeek, x => x.Combos.SelectMany(y => y.Muscles));
+
+            DayMusclesLookup = new Dictionary<DayOfWeek, string[]>();
+            foreach(var group in groupsOfDays)
+            {
+                var musclesCount = group
+                    .GroupBy(x => x, new EnumerableStringEqualityComparer())
+                    .Select(x => new
+                    {
+                        Muscles = x.Key.ToArray(),
+                        Count = x.Count()
+                    });
+
+                string[] trueMuscles;
+                if (musclesCount.Count() == 1)
+                {
+                    trueMuscles = musclesCount.First().Muscles;
+                }
+                else
+                {
+                    trueMuscles = musclesCount.Aggregate((curMax, x) => curMax == null || x.Count > curMax.Count ? x : curMax).Muscles;
+                }
+
+                DayMusclesLookup.Add(group.Key, trueMuscles);
+            }
         }
 
         private class ComboEqualityComparer : IEqualityComparer<ExerciseCombo>
@@ -181,6 +230,24 @@ namespace GymStatistics
             {
                 int hash = obj.Name.GetHashCode();
                 foreach (var s in obj.Exercises)
+                {
+                    hash = hash ^ s.GetHashCode();
+                }
+                return hash;
+            }
+        }
+
+        private class EnumerableStringEqualityComparer : IEqualityComparer<IEnumerable<string>>
+        {
+            public bool Equals(IEnumerable<string> x, IEnumerable<string> y)
+            {
+                return x.Count() == y.Count() && x.All(y.Contains);
+            }
+
+            public int GetHashCode(IEnumerable<string> obj)
+            {
+                int hash = 19;
+                foreach (var s in obj)
                 {
                     hash = hash ^ s.GetHashCode();
                 }

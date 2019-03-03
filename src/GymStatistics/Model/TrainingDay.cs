@@ -10,5 +10,6 @@ namespace GymStatistics.Model
     {
         public string Number;
         public List<ExerciseCombo> Combos = new List<ExerciseCombo>();
+        public DateTime Date;
     }
 }

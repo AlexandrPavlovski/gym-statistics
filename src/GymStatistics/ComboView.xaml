@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="GymStatistics.ComboView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GymStatistics"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel x:Name="mainDockPanel">
+        <DockPanel DockPanel.Dock="Top">
+            <Label Content="Комбо:" DockPanel.Dock="Left" Width="90"/>
+            <ComboBox x:Name="combosComboBox"/>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="0,5,0,0">
+            <Label Content="Упражнение:" DockPanel.Dock="Left" Width="90"/>
+            <TextBox DockPanel.Dock="Right" Margin="5,0,0,0" Width="100"/>
+            <TextBox DockPanel.Dock="Right" Margin="5,0,0,0" Width="100"/>
+            <TextBox DockPanel.Dock="Right" Margin="5,0,0,0" Width="100"/>
+            <ComboBox />
+        </DockPanel>
+    </DockPanel>
+</UserControl>
