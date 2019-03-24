@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymStatistics.Model
 {
-    class Exercise
+    public class Exercise
     {
         public int Order;
         public string Name;

@@ -82,13 +82,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\Exercise.cs" />
-    <Compile Include="Model\ExerciseCombo.cs" />
+    <Compile Include="Model\Combo.cs" />
     <Compile Include="Model\TrainingDay.cs" />
     <Compile Include="Model\SheetMetadata.cs" />
     <Compile Include="SheetDataProcessor.cs" />
     <Compile Include="ComboView.xaml.cs">
       <DependentUpon>ComboView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueObjects\Weekday.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

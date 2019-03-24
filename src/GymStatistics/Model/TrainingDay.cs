@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace GymStatistics.Model
 {
-    class TrainingDay
+    public class TrainingDay
     {
         public string Number;
-        public List<ExerciseCombo> Combos = new List<ExerciseCombo>();
+        public List<Combo> Combos = new List<Combo>();
         public DateTime Date;
     }
 }

@@ -10,11 +10,13 @@ using System.Threading.Tasks;
 
 namespace GymStatistics
 {
-    class SheetDataProcessor
+    public class SheetDataProcessor
     {
         public TrainingDay[] TrainingDays { get; set; }
-        public Dictionary<string, ExerciseCombo> AllCombos { get; set; }
-        public Dictionary<string, string[]> AllExercises { get; set; }
+        public Dictionary<string, Combo> AllCombos { get; set; }
+        public Combo[] MostUsedCombos { get; set; }
+        public Exercise[] AllExercises { get; set; }
+        public Dictionary<string, string[]> MuscleExercisesLookup { get; set; }
         public Dictionary<DayOfWeek, string[]> DayMusclesLookup { get; set; }
 
         private SheetsService _sheetsService;
@@ -31,6 +33,7 @@ namespace GymStatistics
             processor.BuildAllCombos();
             processor.BuildAllExercises();
             processor.BuildDayMusclesLookup();
+            processor.BuildMuscleExercisesLookup();
 
             return processor;
         }
@@ -47,7 +50,7 @@ namespace GymStatistics
             foreach (var sheet in sheetsMetadata)
             {
                 TrainingDay day = null;
-                ExerciseCombo combo = null;
+                Combo combo = null;
                 int comboOrder = 0;
                 int exerciseOrder = 0;
                 var rows = values.ValueRanges.First(x => x.Range.Contains(sheet.Title)).Values;
@@ -73,7 +76,7 @@ namespace GymStatistics
                         }
 
                         exerciseOrder = 0;
-                        combo = new ExerciseCombo
+                        combo = new Combo
                         {
                             Name = rows[i][0].ToString(),
                             Order = comboOrder++
@@ -151,7 +154,8 @@ namespace GymStatistics
                 .SelectMany(x => x.Combos)
                 .GroupBy(x => x.Name);
 
-            var allCombos = new List<ExerciseCombo>();
+            var allCombos = new List<Combo>();
+            var mostUsedCombos = new List<Combo>();
             foreach (var group in groupsOfCombos)
             {
                 var comboCount = group.GroupBy(x => x, new ComboEqualityComparer())
@@ -161,7 +165,7 @@ namespace GymStatistics
                         Count = x.Count()
                     });
 
-                ExerciseCombo trueCombo;
+                Combo trueCombo;
                 if (comboCount.Count() == 1)
                 {
                     trueCombo = comboCount.First().Combo;
@@ -169,21 +173,24 @@ namespace GymStatistics
                 else
                 {
                     trueCombo = comboCount.Aggregate((curMax, x) => curMax == null || x.Count > curMax.Count ? x : curMax).Combo;
+                    mostUsedCombos.Add(trueCombo);
                 }
 
                 allCombos.Add(trueCombo);
             }
 
             AllCombos = allCombos.ToDictionary(x => x.Name, x => x);
+            MostUsedCombos = mostUsedCombos.OrderBy(x => x.Name).ToArray();
         }
 
         private void BuildAllExercises()
         {
-            AllExercises = TrainingDays
-                .SelectMany(x => x.Combos)
+            AllExercises = AllCombos.Values
                 .SelectMany(x => x.Exercises)
-                .GroupBy(x => x.Muscle)
-                .ToDictionary(x => x.Key, x => x.GroupBy(y => y.Name).Select(y => y.Key).ToArray());
+                .GroupBy(x => x.Name)
+                .Select(x => x.First())
+                .OrderBy(x => x.Name)
+                .ToArray();
         }
 
         private void BuildDayMusclesLookup()
@@ -219,14 +226,23 @@ namespace GymStatistics
             }
         }
 
-        private class ComboEqualityComparer : IEqualityComparer<ExerciseCombo>
+        private void BuildMuscleExercisesLookup()
         {
-            public bool Equals(ExerciseCombo x, ExerciseCombo y)
+            MuscleExercisesLookup = TrainingDays
+                .SelectMany(x => x.Combos)
+                .SelectMany(x => x.Exercises)
+                .GroupBy(x => x.Muscle)
+                .ToDictionary(x => x.Key, x => x.GroupBy(y => y.Name).Select(y => y.Key).ToArray());
+        }
+
+        private class ComboEqualityComparer : IEqualityComparer<Combo>
+        {
+            public bool Equals(Combo x, Combo y)
             {
                 return x.Exercises.Count == y.Exercises.Count && x.Exercises.All(y.Exercises.Contains);
             }
 
-            public int GetHashCode(ExerciseCombo obj)
+            public int GetHashCode(Combo obj)
             {
                 int hash = obj.Name.GetHashCode();
                 foreach (var s in obj.Exercises)

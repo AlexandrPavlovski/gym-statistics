@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymStatistics.Model
 {
-    class SheetMetadata
+    public class SheetMetadata
     {
         public string Title;
         public int[] TrainingDayNumberRowIndices;

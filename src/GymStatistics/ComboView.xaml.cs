@@ -21,48 +21,133 @@ namespace GymStatistics
     /// </summary>
     public partial class ComboView : UserControl
     {
+        public SheetDataProcessor sdp;
+
         public ComboView()
         {
             InitializeComponent();
             //DockPanel dockPanel = new DockPanel();
             //dockPanel.Children.IndexOf();
+
         }
 
-        private void AddExercise(Exercise exercise)
+        public void AddCombo(Combo combo)
         {
-            var dp = new DockPanel();
-            DockPanel.SetDock(dp, Dock.Top);
-            dp.Margin = new Thickness(0, 0, 5, 0);
+            var comboDp = new DockPanel()
+            {
+                Height = 25,
+                Margin = new Thickness(0, 5, 0, 0)
+            };
+            DockPanel.SetDock(comboDp, Dock.Top);
 
-            var l = new Label();
+            var l = new Label()
+            {
+                Content = "Комбо:",
+                Width = 90
+            };
             DockPanel.SetDock(l, Dock.Left);
-            l.Content = "Упражнение:";
-            l.Width = 90;
-            dp.Children.Add(l);
+            comboDp.Children.Add(l);
 
-            var planTb = new TextBox();
-            DockPanel.SetDock(planTb, Dock.Right);
-            planTb.Margin = new Thickness(5, 0, 0, 0);
-            planTb.Width = 100;
-            planTb.Text = exercise.Plan;
-            dp.Children.Add(planTb);
+            var combosCb = new ComboBox()
+            {
+                ItemsSource = sdp.AllCombos.Keys.OrderBy(x => x),
+                SelectedValue = combo.Name
+            };
+            comboDp.Children.Add(combosCb);
 
-            var repetitionsTb = new TextBox();
-            DockPanel.SetDock(repetitionsTb, Dock.Right);
-            repetitionsTb.Margin = new Thickness(5, 0, 0, 0);
-            repetitionsTb.Width = 100;
-            repetitionsTb.Text = exercise.Repetitions;
-            dp.Children.Add(repetitionsTb);
+            var exerciseDp = new DockPanel()
+            {
+                Margin = new Thickness(10, 0, 0, 0)
+            };
+            DockPanel.SetDock(exerciseDp, Dock.Top);
 
-            var restTb = new TextBox();
-            DockPanel.SetDock(restTb, Dock.Right);
-            restTb.Margin = new Thickness(5, 0, 0, 0);
-            restTb.Width = 100;
-            restTb.Text = exercise.Rest;
-            dp.Children.Add(restTb);
+            foreach (var e in combo.Exercises)
+            {
+                AddExercise(e, exerciseDp);
+            }
 
-            var cb = new ComboBox();
-            dp.Children.Add(cb);
+            mainDockPanel.Children.Add(comboDp);
+            mainDockPanel.Children.Add(exerciseDp);
+        }
+
+        public void AddExercise(Exercise exercise, DockPanel dp)
+        {
+            var todaysExerciseDp = new DockPanel()
+            {
+                Height = 25,
+                Margin = new Thickness(0, 5, 0, 0)
+            };
+            DockPanel.SetDock(todaysExerciseDp, Dock.Top);
+
+            var l = new Label()
+            {
+                Content = "Упражнение:",
+                Width = 90
+            };
+            DockPanel.SetDock(l, Dock.Left);
+            todaysExerciseDp.Children.Add(l);
+
+            AddTextBox(todaysExerciseDp, exercise.Plan);
+            AddTextBox(todaysExerciseDp, exercise.Repetitions);
+            AddTextBox(todaysExerciseDp, exercise.Rest);
+
+            var exerciseCb = new ComboBox()
+            {
+                ItemsSource = sdp.AllExercises.Select(x => x.Name),
+                SelectedValue = exercise.Name
+            };
+            todaysExerciseDp.Children.Add(exerciseCb);
+
+
+            var prevExerciseDp = new DockPanel()
+            {
+                Height = 25,
+                Margin = new Thickness(0, 5, 0, 0)
+            };
+            DockPanel.SetDock(prevExerciseDp, Dock.Top);
+
+            var prevL = new Label()
+            {
+                Content = "Раньше:",
+                Width = 90
+            };
+            DockPanel.SetDock(prevL, Dock.Left);
+            prevExerciseDp.Children.Add(prevL);
+
+            AddTextBox(prevExerciseDp, exercise.Plan, false);
+            AddTextBox(prevExerciseDp, exercise.Repetitions, false);
+            AddTextBox(prevExerciseDp, exercise.Feeling, false);
+            AddTextBox(prevExerciseDp, exercise.Date.ToString("yyyy-MM-dd"), false, Dock.Left, false);
+
+            var prevWorkTb = new TextBox()
+            {
+                IsEnabled = false,
+                Margin = new Thickness(5, 0, 0, 0),
+                Text = exercise.Work
+            };
+            DockPanel.SetDock(prevWorkTb, Dock.Right);
+            prevExerciseDp.Children.Add(prevWorkTb);
+
+            dp.Children.Add(todaysExerciseDp);
+            dp.Children.Add(prevExerciseDp);
+
+            void AddTextBox(DockPanel parent, string text, bool isEnabled = true, Dock dock = Dock.Right, bool setMargin = true)
+            {
+                var tb = new TextBox()
+                {
+                    Text = text,
+                    IsEnabled = isEnabled,
+                    Margin = new Thickness(setMargin ? 5 : 0, 0, 0, 0),
+                    Width = 100
+                };
+                DockPanel.SetDock(tb, dock);
+                parent.Children.Add(tb);
+            }
+        }
+
+        public void Reset()
+        {
+            mainDockPanel.Children.Clear();
         }
     }
 }

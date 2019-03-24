@@ -1,4 +1,5 @@
 ﻿using GymStatistics.Model;
+using GymStatistics.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,30 +24,35 @@ namespace GymStatistics
     {
         private GoogleApiClient gac;
         private TrainingDay[] trainingDays;
-        private Dictionary<string, string[]> dayComboLookup = new Dictionary<string, string[]>
-        {
-            { "Понедельник", new[]
-                {
-                    ""
-                }
-            },
-            { "Среда",new[]
-                {
-                    ""
-                }
-            },
-            { "Пятница",new[]
-                {
-                    ""
-                }
-            }
-        };
+        private SheetDataProcessor sdp;
 
         public MainWindow()
         {
             gac = new GoogleApiClient();
 
             InitializeComponent();
+
+            var days = new[]
+            {
+                new Weekday
+                {
+                    DisplayText = "Понедельник",
+                    Value = DayOfWeek.Monday
+                },
+                new Weekday
+                {
+                    DisplayText = "Среда",
+                    Value = DayOfWeek.Wednesday
+                },
+                new Weekday
+                {
+                    DisplayText = "Пятница",
+                    Value = DayOfWeek.Friday
+                }
+            };
+            dayOfWeekCb.ItemsSource = days;
+            dayOfWeekCb.DisplayMemberPath = "DisplayText";
+            dayOfWeekCb.SelectedValuePath = "Value";
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -58,19 +64,52 @@ namespace GymStatistics
             }
 
             var sheetsService = await gac.GetSheetsServiceAsync();
-            var processor = SheetDataProcessor.Build(sheetsService, sheetId);
-            trainingDays = processor.TrainingDays;
+            sdp = SheetDataProcessor.Build(sheetsService, sheetId);
+            comboView.sdp = sdp;
+
+            trainingDays = sdp.TrainingDays;
 
             var combos = trainingDays.SelectMany(x => x.Combos).GroupBy(x => x.Name);
 
-            combosComboBox.ItemsSource = combos.Select(x => x.Key).OrderBy(x => x);
-            dayOfWeekComboBox.ItemsSource = dayComboLookup.Keys;
-            dayOfWeekComboBox.SelectedIndex = 0;
+            //combosComboBox.ItemsSource = combos.Select(x => x.Key).OrderBy(x => x);
+
         }
 
         private void DayOfWeekComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            combosComboBox.SelectedIndex = 0;
+            var selectedDay = (DayOfWeek)dayOfWeekCb.SelectedValue;
+            var muscles = sdp.DayMusclesLookup[selectedDay];
+            var prevDay = sdp.TrainingDays
+                    .Where(x => x.Date.DayOfWeek == selectedDay)
+                    .First();
+
+            var todaysCombos = new List<Combo>(3);
+            foreach (var m in muscles)
+            {
+                var combos = sdp.MostUsedCombos
+                    .Where(x => x.Muscles.Contains(m));
+
+                var prevCombo = prevDay.Combos
+                    .Where(x => x.Muscles.Contains(m))
+                    .First()
+                    .Name;
+
+                var enumerator = combos.GetEnumerator();
+                while (enumerator.MoveNext() && enumerator.Current.Name != prevCombo) { }
+                if (enumerator.Current == null)
+                {
+                    enumerator.Reset();
+                    enumerator.MoveNext();
+                }
+
+                todaysCombos.Add(enumerator.Current);
+            }
+
+            comboView.Reset();
+            foreach (var c in todaysCombos.OrderBy(x => x.Order))
+            {
+                comboView.AddCombo(c);
+            }
         }
     }
 }
