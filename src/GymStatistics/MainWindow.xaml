@@ -18,7 +18,7 @@
 
         <Rectangle Fill="Blue" Margin="10,81,9.6,0" Height="1" VerticalAlignment="Top"/>
         
-        <StackPanel Margin="10,263,9.6,0">
+        <StackPanel Margin="10,87,9.6,0">
             <local:ComboView x:Name="comboView"/>
         </StackPanel>
     </Grid>

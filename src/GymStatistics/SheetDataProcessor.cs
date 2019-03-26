@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GymStatistics
 {
-    public class SheetDataProcessor
+    public partial class SheetDataProcessor
     {
         public TrainingDay[] TrainingDays { get; set; }
         public Dictionary<string, Combo> AllCombos { get; set; }
@@ -102,7 +102,7 @@ namespace GymStatistics
                 }
             }
 
-            TrainingDays = trainingDays.ToArray();
+            TrainingDays = trainingDays.OrderByDescending(x => x.Date).ToArray();
         }
 
         private IEnumerable<SheetMetadata> GetSheetsMetadata()

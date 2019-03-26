@@ -114,16 +114,18 @@ namespace GymStatistics
             DockPanel.SetDock(prevL, Dock.Left);
             prevExerciseDp.Children.Add(prevL);
 
-            AddTextBox(prevExerciseDp, exercise.Plan, false);
-            AddTextBox(prevExerciseDp, exercise.Repetitions, false);
-            AddTextBox(prevExerciseDp, exercise.Feeling, false);
-            AddTextBox(prevExerciseDp, exercise.Date.ToString("yyyy-MM-dd"), false, Dock.Left, false);
+            var prevExercise = sdp.GetPrevExercise(exercise.Name);
+
+            AddTextBox(prevExerciseDp, prevExercise.Plan, false);
+            AddTextBox(prevExerciseDp, prevExercise.Repetitions, false);
+            AddTextBox(prevExerciseDp, prevExercise.Feeling, false);
+            AddTextBox(prevExerciseDp, prevExercise.Date.ToString("yyyy-MM-dd"), false, Dock.Left, false);
 
             var prevWorkTb = new TextBox()
             {
                 IsEnabled = false,
                 Margin = new Thickness(5, 0, 0, 0),
-                Text = exercise.Work
+                Text = prevExercise.Work
             };
             DockPanel.SetDock(prevWorkTb, Dock.Right);
             prevExerciseDp.Children.Add(prevWorkTb);

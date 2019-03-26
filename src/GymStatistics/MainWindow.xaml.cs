@@ -78,35 +78,9 @@ namespace GymStatistics
         private void DayOfWeekComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedDay = (DayOfWeek)dayOfWeekCb.SelectedValue;
-            var muscles = sdp.DayMusclesLookup[selectedDay];
-            var prevDay = sdp.TrainingDays
-                    .Where(x => x.Date.DayOfWeek == selectedDay)
-                    .First();
-
-            var todaysCombos = new List<Combo>(3);
-            foreach (var m in muscles)
-            {
-                var combos = sdp.MostUsedCombos
-                    .Where(x => x.Muscles.Contains(m));
-
-                var prevCombo = prevDay.Combos
-                    .Where(x => x.Muscles.Contains(m))
-                    .First()
-                    .Name;
-
-                var enumerator = combos.GetEnumerator();
-                while (enumerator.MoveNext() && enumerator.Current.Name != prevCombo) { }
-                if (enumerator.Current == null)
-                {
-                    enumerator.Reset();
-                    enumerator.MoveNext();
-                }
-
-                todaysCombos.Add(enumerator.Current);
-            }
 
             comboView.Reset();
-            foreach (var c in todaysCombos.OrderBy(x => x.Order))
+            foreach (var c in sdp.GetCombos(selectedDay).OrderBy(x => x.Order))
             {
                 comboView.AddCombo(c);
             }

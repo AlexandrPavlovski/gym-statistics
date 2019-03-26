@@ -89,6 +89,7 @@
     <Compile Include="ComboView.xaml.cs">
       <DependentUpon>ComboView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SheetDataProcessor.PublicMethods.cs" />
     <Compile Include="ValueObjects\Weekday.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
