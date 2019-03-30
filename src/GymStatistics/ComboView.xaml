@@ -6,7 +6,42 @@
              xmlns:local="clr-namespace:GymStatistics"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <DockPanel x:Name="mainDockPanel">
+    <ItemsControl x:Name="itemsControl" DockPanel.Dock="Top">
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <DockPanel>
+                    <DockPanel Height="25" Margin="0,5,0,0" DockPanel.Dock="Top">
+                        <Label Content="Комбо:" Width="90" DockPanel.Dock="Left"/>
+                        <ComboBox ItemsSource="{Binding allComboNames}"/>
+                    </DockPanel>
+                    <ItemsControl ItemsSource="{Binding exercises}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel Margin="10,0,0,0" DockPanel.Dock="Top">
+                                    <DockPanel Margin="0,5,0,0" Height="25" DockPanel.Dock="Top">
+                                        <Label Content="Упражнение:" Width="90" DockPanel.Dock="Left"/>
+                                        <TextBox Text="{Binding todaysEx.Plan}" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <TextBox Text="{Binding todaysEx.Repetitions}" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <TextBox Text="{Binding todaysEx.Rest}" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <ComboBox ItemsSource="{Binding allExercises}"/>
+                                    </DockPanel>
+                                    <DockPanel Margin="0,5,0,0" Height="25" DockPanel.Dock="Top">
+                                        <Label Content="Раньше:" Width="90" DockPanel.Dock="Left"/>
+                                        <TextBox Text="{Binding prevEx.Plan}" IsEnabled="False" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <TextBox Text="{Binding prevEx.Repetitions}" IsEnabled="False" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <TextBox Text="{Binding prevEx.Feeling}" IsEnabled="False" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <TextBox Text="{Binding prevEx.Date}" IsEnabled="False" Width="100" DockPanel.Dock="Left"/>
+                                        <TextBox Text="{Binding prevEx.Work}" IsEnabled="False" Margin="5,0,0,0" DockPanel.Dock="Right"/>
+                                    </DockPanel>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </DockPanel>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    <!--<DockPanel x:Name="mainDockPanel">
         <DockPanel DockPanel.Dock="Top" >
             <Label Content="Комбо:" DockPanel.Dock="Left" Width="90"/>
             <ComboBox x:Name="combosComboBox"/>
@@ -26,5 +61,5 @@
                 <TextBox DockPanel.Dock="Right" Margin="5,0,0,0" Width="100"/>
             </DockPanel>
         </DockPanel>
-    </DockPanel>
+    </DockPanel>-->
 </UserControl>

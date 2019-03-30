@@ -26,9 +26,8 @@ namespace GymStatistics
         public ComboView()
         {
             InitializeComponent();
-            //DockPanel dockPanel = new DockPanel();
-            //dockPanel.Children.IndexOf();
 
+            itemsControl.ItemsSource = new[] { new { exercises = new[] { 0, 0, 0} }, new { exercises = new[] { 0, 0, 0} }, };
         }
 
         public void AddCombo(Combo combo)
@@ -66,8 +65,8 @@ namespace GymStatistics
                 AddExercise(e, exerciseDp);
             }
 
-            mainDockPanel.Children.Add(comboDp);
-            mainDockPanel.Children.Add(exerciseDp);
+            //mainDockPanel.Children.Add(comboDp);
+            //mainDockPanel.Children.Add(exerciseDp);
         }
 
         public void AddExercise(Exercise exercise, DockPanel dp)
@@ -149,7 +148,12 @@ namespace GymStatistics
 
         public void Reset()
         {
-            mainDockPanel.Children.Clear();
+            //mainDockPanel.Children.Clear();
+        }
+
+        public class ComboViewModel
+        {
+
         }
     }
 }
