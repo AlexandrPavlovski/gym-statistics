@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GymStatistics
@@ -112,6 +113,7 @@ namespace GymStatistics
             var spreadsheetsData = spreadsheetsRequest.Execute();
 
             return spreadsheetsData.Sheets
+                .Where(x => Regex.IsMatch(x.Properties.Title, @"TR\d+-\d*"))
                 .Select(x => new SheetMetadata
                 {
                     Title = x.Properties.Title,

@@ -22,19 +22,15 @@ namespace GymStatistics
                     .Where(x => x.Muscles.Contains(m));
 
                 var prevCombo = prevDay.Combos
-                    .Where(x => x.Muscles.Contains(m))
-                    .First()
+                    .First(x => x.Muscles.Contains(m))
                     .Name;
 
-                var enumerator = combos.GetEnumerator();
-                while (enumerator.MoveNext() && enumerator.Current.Name != prevCombo) { }
-                if (enumerator.Current == null)
-                {
-                    enumerator.Reset();
-                }
-                enumerator.MoveNext();
+                var combo = combos
+                    .SkipWhile(x => x.Name != prevCombo)
+                    .Skip(1)
+                    .FirstOrDefault() ?? combos.First();
 
-                yield return enumerator.Current;
+                yield return combo;
             }
         }
 

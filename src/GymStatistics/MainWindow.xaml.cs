@@ -65,25 +65,13 @@ namespace GymStatistics
 
             var sheetsService = await gac.GetSheetsServiceAsync();
             sdp = SheetDataProcessor.Build(sheetsService, sheetId);
-            comboView.sdp = sdp;
 
-            trainingDays = sdp.TrainingDays;
-
-            var combos = trainingDays.SelectMany(x => x.Combos).GroupBy(x => x.Name);
-
-            //combosComboBox.ItemsSource = combos.Select(x => x.Key).OrderBy(x => x);
-
+            comboView.Init(sdp);
         }
 
         private void DayOfWeekComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedDay = (DayOfWeek)dayOfWeekCb.SelectedValue;
-
-            comboView.Reset();
-            foreach (var c in sdp.GetCombos(selectedDay).OrderBy(x => x.Order))
-            {
-                comboView.AddCombo(c);
-            }
+            comboView.SetDayOfWeek((DayOfWeek)dayOfWeekCb.SelectedValue);
         }
     }
 }

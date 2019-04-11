@@ -26,12 +26,9 @@ namespace GymStatistics
 
         public async Task<SheetsService> GetSheetsServiceAsync()
         {
-            string credPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            credPath = Path.Combine(credPath, ".credentials/sheets.googleapis.com-dotnet-quickstart.json");
-            var fileStore = new FileDataStore(credPath, true);
+            var fileStore = new FileDataStore("credentials", true);
 
             var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(clientSecrets, scopes, "user", CancellationToken.None, fileStore);
-            Console.WriteLine("Credential file saved to: " + credPath);
 
             var service = new SheetsService(new BaseClientService.Initializer()
             {
