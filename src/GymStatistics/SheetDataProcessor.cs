@@ -2,8 +2,10 @@
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util;
 using GymStatistics.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,6 +15,8 @@ namespace GymStatistics
 {
     public partial class SheetDataProcessor
     {
+        private const string _combosFileName = "AllCombos.json";
+
         public TrainingDay[] TrainingDays { get; set; }
         public Dictionary<string, Combo> AllCombos { get; set; }
         public Combo[] MostUsedCombos { get; set; }
@@ -31,7 +35,14 @@ namespace GymStatistics
             processor._spreadsheetId = spreadsheetId;
 
             processor.BuildTrainingDays();
-            processor.BuildAllCombos();
+            if (File.Exists(_combosFileName))
+            {
+                processor.ReadAllCombos();
+            }
+            else
+            {
+                processor.BuildAllCombos();
+            }
             processor.BuildAllExercises();
             processor.BuildDayMusclesLookup();
             processor.BuildMuscleExercisesLookup();
@@ -80,7 +91,7 @@ namespace GymStatistics
                         combo = new Combo
                         {
                             Name = rows[i][0].ToString(),
-                            Order = comboOrder++
+                            OrderInDay = comboOrder++
                         };
                         day.Combos.Add(combo);
                         continue;
@@ -185,6 +196,20 @@ namespace GymStatistics
             MostUsedCombos = mostUsedCombos.OrderBy(x => x.Name).ToArray();
         }
 
+        private void ReadAllCombos()
+        {
+            var json = File.ReadAllText(_combosFileName, Encoding.UTF8);
+            var combos = JsonConvert.DeserializeObject<Combo[]>(json);
+
+            foreach(var c in combos)
+            {
+                c.Muscles = c.Exercises.Select(x => x.Muscle).Distinct().ToList();
+            }
+
+            MostUsedCombos = combos;
+            AllCombos = combos.ToDictionary(x => x.Name, x => x);
+        }
+
         private void BuildAllExercises()
         {
             AllExercises = AllCombos.Values
@@ -204,7 +229,7 @@ namespace GymStatistics
                 .GroupBy(x => x.Date.DayOfWeek, x => x.Combos.SelectMany(y => y.Muscles));
 
             DayMusclesLookup = new Dictionary<DayOfWeek, string[]>();
-            foreach(var group in groupsOfDays)
+            foreach (var group in groupsOfDays)
             {
                 var musclesCount = group
                     .GroupBy(x => x, new EnumerableStringEqualityComparer())
@@ -236,6 +261,7 @@ namespace GymStatistics
                 .GroupBy(x => x.Muscle)
                 .ToDictionary(x => x.Key, x => x.GroupBy(y => y.Name).Select(y => y.Key).ToArray());
         }
+
 
         private class ComboEqualityComparer : IEqualityComparer<Combo>
         {

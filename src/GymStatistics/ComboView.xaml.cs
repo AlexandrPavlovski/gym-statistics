@@ -46,7 +46,7 @@ namespace GymStatistics
         public void SetDayOfWeek(DayOfWeek day)
         {
             Reset();
-            foreach (var c in _sdp.GetCombos(day).OrderBy(x => x.Order))
+            foreach (var c in _sdp.GetCombos(day).OrderBy(x => x.OrderInDay))
             {
                 AddCombo(c);
             }

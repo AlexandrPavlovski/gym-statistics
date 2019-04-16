@@ -8,7 +8,7 @@ namespace GymStatistics.Model
 {
     public class Combo
     {
-        public int Order;
+        public int OrderInDay;
         public string Name;
         public List<Exercise> Exercises = new List<Exercise>();
         public List<string> Muscles = new List<string>();
