@@ -63,6 +63,7 @@ namespace GymStatistics
             {
                 TrainingDay day = null;
                 Combo combo = null;
+                int trainingDayOrder = 1;
                 int comboOrder = 0;
                 int exerciseOrder = 0;
                 var rows = values.ValueRanges.First(x => x.Range.Contains(sheet.Title)).Values;
@@ -73,7 +74,8 @@ namespace GymStatistics
                         comboOrder = 0;
                         day = new TrainingDay
                         {
-                            Number = rows[i][0].ToString(),
+                            Oreder = trainingDayOrder++,
+                            Name = rows[i][0].ToString().Trim(),
                             Date = DateTime.Parse(rows[i + 2][7].ToString())
                         };
                         trainingDays.Add(day);
@@ -90,7 +92,7 @@ namespace GymStatistics
                         exerciseOrder = 0;
                         combo = new Combo
                         {
-                            Name = rows[i][0].ToString(),
+                            Name = rows[i][0].ToString().Trim(),
                             OrderInDay = comboOrder++
                         };
                         day.Combos.Add(combo);
@@ -99,18 +101,19 @@ namespace GymStatistics
 
                     var exercise = new Exercise
                     {
-                        Name = rows[i][0].ToString(),
-                        Muscle = rows[i][1].ToString(),
-                        Rest = rows[i][2].ToString(),
-                        Repetitions = rows[i][3].ToString(),
+                        Name = rows[i][0].ToString().Trim(),
+                        Muscle = rows[i][1].ToString().Trim(),
+                        Rest = rows[i][2].ToString().Trim(),
+                        Repetitions = rows[i][3].ToString().Trim(),
                         Work = rows[i][4].ToString(),
-                        Plan = rows[i][5].ToString(),
+                        Plan = rows[i][5].ToString().Trim(),
+                        Best = rows[i][6].ToString().Trim(),
                         Date = day.Date,
                         Feeling = rows[i][8].ToString(),
                         Order = exerciseOrder++
                     };
                     combo.Exercises.Add(exercise);
-                    combo.Muscles.Add(rows[i][1].ToString());
+                    combo.Muscles.Add(rows[i][1].ToString().Trim());
                 }
             }
 

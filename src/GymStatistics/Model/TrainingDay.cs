@@ -8,7 +8,8 @@ namespace GymStatistics.Model
 {
     public class TrainingDay
     {
-        public string Number;
+        public int Oreder;
+        public string Name;
         public List<Combo> Combos = new List<Combo>();
         public DateTime Date;
     }

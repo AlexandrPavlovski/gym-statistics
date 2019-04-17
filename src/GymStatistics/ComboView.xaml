@@ -14,7 +14,7 @@
                     <DockPanel Height="25" Margin="0,5,0,0" DockPanel.Dock="Top">
                         <Label Content="Комбо:" Width="90" DockPanel.Dock="Left"/>
                         <ComboBox ItemsSource="{Binding DataContext.AllComboNames, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                  SelectedItem="{Binding Name}"/>
+                                  SelectedItem="{Binding Name}" SelectionChanged="Combo_SelectionChanged"/>
                     </DockPanel>
                     <ItemsControl ItemsSource="{Binding Exercises}">
                         <ItemsControl.ItemTemplate>
@@ -22,19 +22,19 @@
                                 <DockPanel Margin="10,0,0,0" DockPanel.Dock="Top">
                                     <DockPanel Margin="0,5,0,0" Height="25" DockPanel.Dock="Top">
                                         <Label Content="Упражнение:" Width="90" DockPanel.Dock="Left"/>
-                                        <TextBox Text="{Binding TodaysEx.Plan}" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
-                                        <TextBox Text="{Binding TodaysEx.Repetitions}" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
-                                        <TextBox Text="{Binding TodaysEx.Rest}" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
-                                        <ComboBox ItemsSource="{Binding DataContext.AllExercises, RelativeSource={RelativeSource AncestorLevel=2,AncestorType=ItemsControl}}"
-                                                  SelectedItem="{Binding TodaysEx.Name}"/>
+                                        <TextBox Text="{Binding TodayEx.Plan}" ToolTip="План"  Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <TextBox Text="{Binding TodayEx.Repetitions}" ToolTip="Подходы" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <TextBox Text="{Binding TodayEx.Rest}" ToolTip="Отдых" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <ComboBox ItemsSource="{Binding DataContext.AllExercises, RelativeSource={RelativeSource AncestorLevel=2, AncestorType=ItemsControl}}"
+                                                  SelectedItem="{Binding TodayEx.Name}" SelectionChanged="Exercise_SelectionChanged"/>
                                     </DockPanel>
                                     <DockPanel Margin="0,5,0,0" Height="25" DockPanel.Dock="Top">
                                         <Label Content="Раньше:" Width="90" DockPanel.Dock="Left"/>
-                                        <TextBox Text="{Binding PrevEx.Plan}" IsEnabled="False" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
-                                        <TextBox Text="{Binding PrevEx.Repetitions}" IsEnabled="False" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
-                                        <TextBox Text="{Binding PrevEx.Feeling}" IsEnabled="False" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
-                                        <TextBox Text="{Binding PrevEx.Date}" IsEnabled="False" Width="100" DockPanel.Dock="Left"/>
-                                        <TextBox Text="{Binding PrevEx.Work}" IsEnabled="False" Margin="5,0,0,0" DockPanel.Dock="Right"/>
+                                        <TextBox Text="{Binding PrevEx.Plan}" ToolTip="План" IsReadOnly="True" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <TextBox Text="{Binding PrevEx.Repetitions}" ToolTip="Подходы" IsReadOnly="True" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <TextBox Text="{Binding PrevEx.Feeling}" ToolTip="Чувство" IsReadOnly="True" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right"/>
+                                        <TextBox Text="{Binding PrevEx.Date}" ToolTip="Дата" IsReadOnly="True" Width="100" DockPanel.Dock="Left"/>
+                                        <TextBox Text="{Binding PrevEx.Work}" ToolTip="Работа" IsReadOnly="True" Margin="5,0,0,0" DockPanel.Dock="Right"/>
                                     </DockPanel>
                                 </DockPanel>
                             </DataTemplate>
@@ -44,25 +44,4 @@
             </DataTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>
-    <!--<DockPanel x:Name="mainDockPanel">
-        <DockPanel DockPanel.Dock="Top" >
-            <Label Content="Комбо:" DockPanel.Dock="Left" Width="90"/>
-            <ComboBox x:Name="combosComboBox"/>
-        </DockPanel>
-        <DockPanel DockPanel.Dock="Top">
-            <DockPanel DockPanel.Dock="Top" Margin="0,5,0,0" Height="20">
-                <Label Content="Упражнение:" DockPanel.Dock="Left" Width="90"/>
-                <TextBox DockPanel.Dock="Right" Margin="5,0,0,0" Width="100"/>
-                <TextBox DockPanel.Dock="Right" Margin="5,0,0,0" Width="100"/>
-                <TextBox DockPanel.Dock="Right" Margin="5,0,0,0" Width="100" Text="sss"/>
-                <ComboBox />
-            </DockPanel>
-            <DockPanel DockPanel.Dock="Top" Margin="0,5,0,0">
-                <TextBox DockPanel.Dock="Right" Margin="5,0,0,0" Width="100"/>
-                <TextBox DockPanel.Dock="Right" Margin="5,0,0,0" Width="100"/>
-                <TextBox DockPanel.Dock="Right" Margin="5,0,0,0" Width="100"/>
-                <TextBox DockPanel.Dock="Right" Margin="5,0,0,0" Width="100"/>
-            </DockPanel>
-        </DockPanel>
-    </DockPanel>-->
 </UserControl>

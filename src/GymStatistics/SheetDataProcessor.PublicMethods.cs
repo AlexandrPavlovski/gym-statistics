@@ -41,11 +41,11 @@ namespace GymStatistics
             {
                 if (ex.Name == exerciseName)
                 {
-                    foundCount++;
                     if (foundCount == reversedOrder)
                     {
                         return ex;
                     }                    
+                    foundCount++;
                 }
             }
             return null;

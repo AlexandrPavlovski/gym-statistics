@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace GymStatistics
     {
         private ComboViewVM _vm;
         private SheetDataProcessor _sdp;
+        private DayOfWeek _selectedDay;
 
         public ComboView()
         {
@@ -45,44 +47,15 @@ namespace GymStatistics
 
         public void SetDayOfWeek(DayOfWeek day)
         {
+            _selectedDay = day;
+
             Reset();
             foreach (var c in _sdp.GetCombos(day).OrderBy(x => x.OrderInDay))
             {
-                AddCombo(c);
-            }
-        }
-
-        public void AddCombo(Combo combo)
-        {
-            var comboVM = new ComboVM()
-            {
-                Name = combo.Name
-            };
-            _vm.Combos.Add(comboVM);
-
-            foreach (var e in combo.Exercises)
-            {
-                var prevEx = _sdp.GetPrevExercise(e.Name);
-                var ceVM = new CompareExerciseVM
+                _vm.Combos.Add(new ComboVM()
                 {
-                    TodaysEx = new ExerciseVM
-                    {
-                        Name = e.Name,
-                        Plan = e.Plan,
-                        Repetitions = e.Repetitions,
-                        Rest = e.Rest
-                    },
-                    PrevEx = new ExerciseVM
-                    {
-                        Plan = prevEx.Plan,
-                        Repetitions = prevEx.Repetitions,
-                        Feeling = prevEx.Feeling,
-                        Date = prevEx.Date.ToString("yyyy-MM-dd"),
-                        Work = prevEx.Work
-                    }
-                };
-
-                comboVM.Exercises.Add(ceVM);
+                    Name = c.Name
+                });
             }
         }
 
@@ -93,6 +66,44 @@ namespace GymStatistics
                 c.Exercises.Clear();
             }
             _vm.Combos.Clear();
+        }
+
+        private void Combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var comboVM = (sender as ComboBox).DataContext as ComboVM;
+            comboVM.Exercises.Clear();
+
+            foreach (var exercise in _sdp.AllCombos[comboVM.Name].Exercises)
+            {
+                var compareExerciseVM = new CompareExerciseVM
+                {
+                    TodayEx = new ExerciseVM
+                    {
+                        Name = exercise.Name
+                    },
+                    PrevEx = new ExerciseVM()
+                };
+
+                comboVM.Exercises.Add(compareExerciseVM);
+            }
+        }
+
+        private void Exercise_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var compareExerciseVM = (sender as ComboBox).DataContext as CompareExerciseVM;
+
+            var currEx = _sdp.GetPrevExercise(compareExerciseVM.TodayEx.Name, 0);
+            var prevEx = _sdp.GetPrevExercise(compareExerciseVM.TodayEx.Name);
+
+            compareExerciseVM.TodayEx.Plan = currEx?.Plan;
+            compareExerciseVM.TodayEx.Repetitions = currEx?.Repetitions;
+            compareExerciseVM.TodayEx.Rest = currEx?.Rest;
+
+            compareExerciseVM.PrevEx.Plan = prevEx?.Plan ?? "N/A";
+            compareExerciseVM.PrevEx.Repetitions = prevEx?.Repetitions ?? "N/A";
+            compareExerciseVM.PrevEx.Feeling = prevEx?.Feeling ?? "N/A";
+            compareExerciseVM.PrevEx.Date = prevEx?.Date.ToString("yyyy-MM-dd") ?? "N/A";
+            compareExerciseVM.PrevEx.Work = prevEx?.Work ?? "N/A";
         }
     }
 
@@ -125,20 +136,20 @@ namespace GymStatistics
 
     public class CompareExerciseVM
     {
-        public ExerciseVM TodaysEx { get; set; }
+        public ExerciseVM TodayEx { get; set; }
 
         public ExerciseVM PrevEx { get; set; }
     }
 
-    public class ExerciseVM
+    public class ExerciseVM : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public string Name { get; set; }
-        public string Muscle { get; set; }
         public string Rest { get; set; }
         public string Repetitions { get; set; }
         public string Work { get; set; }
         public string Plan { get; set; }
-        public string Best { get; set; }
         public string Date { get; set; }
         public string Feeling { get; set; }
     }
