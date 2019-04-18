@@ -87,6 +87,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppData.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Model\Exercise.cs" />
     <Compile Include="Model\Combo.cs" />
     <Compile Include="Model\TrainingDay.cs" />

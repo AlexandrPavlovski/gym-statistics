@@ -22,13 +22,15 @@ namespace GymStatistics
     /// </summary>
     public partial class MainWindow : Window
     {
-        private GoogleApiClient gac;
-        private TrainingDay[] trainingDays;
-        private SheetDataProcessor sdp;
+        private GoogleApiClient _gac;
+        private SheetDataProcessor _sdp;
+
+        private AppData _appData;
 
         public MainWindow()
         {
-            gac = new GoogleApiClient();
+            _gac = new GoogleApiClient();
+            _appData = AppData.Build();
 
             InitializeComponent();
 
@@ -53,20 +55,25 @@ namespace GymStatistics
             dayOfWeekCb.ItemsSource = days;
             dayOfWeekCb.DisplayMemberPath = "DisplayText";
             dayOfWeekCb.SelectedValuePath = "Value";
+
+            sheetIdInput.Text = _appData.LastOpenedSheetId;
+            sheetNameInput.Text = _appData.LastOpenedSheetName;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             var sheetId = sheetIdInput.Text;
-            if (string.IsNullOrWhiteSpace(sheetId))
-            {
-                sheetId = "1o9ecJKUtohwqReFGgHq5IeFwAwJuZAXrQNkmQ-Hn6Fc";
-            }
 
-            var sheetsService = await gac.GetSheetsServiceAsync();
-            sdp = SheetDataProcessor.Build(sheetsService, sheetId);
+            var sheetsService = await _gac.GetSheetsServiceAsync();
+            _sdp = SheetDataProcessor.Build(sheetsService, sheetId);
 
-            comboView.Init(sdp);
+            comboView.Init(_sdp);
+
+            sheetNameInput.Text = _sdp.SheetTitle;
+
+            _appData.LastOpenedSheetId = sheetId;
+            _appData.LastOpenedSheetName = _sdp.SheetTitle;
+            _appData.Save();
         }
 
         private void DayOfWeekComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

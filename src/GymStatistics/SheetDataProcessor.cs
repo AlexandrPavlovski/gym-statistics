@@ -15,14 +15,14 @@ namespace GymStatistics
 {
     public partial class SheetDataProcessor
     {
-        private const string _combosFileName = "AllCombos.json";
+        public TrainingDay[] TrainingDays { get; private set; }
+        public Dictionary<string, Combo> AllCombos { get; private set; }
+        public Combo[] MostUsedCombos { get; private set; }
+        public Exercise[] AllExercises { get; private set; }
+        public Dictionary<string, string[]> MuscleExercisesLookup { get; private set; }
+        public Dictionary<DayOfWeek, string[]> DayMusclesLookup { get; private set; }
 
-        public TrainingDay[] TrainingDays { get; set; }
-        public Dictionary<string, Combo> AllCombos { get; set; }
-        public Combo[] MostUsedCombos { get; set; }
-        public Exercise[] AllExercises { get; set; }
-        public Dictionary<string, string[]> MuscleExercisesLookup { get; set; }
-        public Dictionary<DayOfWeek, string[]> DayMusclesLookup { get; set; }
+        public string SheetTitle { get; private set; }
 
         private SheetsService _sheetsService;
         private string _spreadsheetId;
@@ -35,7 +35,7 @@ namespace GymStatistics
             processor._spreadsheetId = spreadsheetId;
 
             processor.BuildTrainingDays();
-            if (File.Exists(_combosFileName))
+            if (File.Exists(Constants.CombosFileName))
             {
                 processor.ReadAllCombos();
             }
@@ -126,6 +126,8 @@ namespace GymStatistics
             spreadsheetsRequest.IncludeGridData = true;
             var spreadsheetsData = spreadsheetsRequest.Execute();
 
+            SheetTitle = spreadsheetsData.Properties.Title;
+
             return spreadsheetsData.Sheets
                 .Where(x => Regex.IsMatch(x.Properties.Title, @"TR\d+-\d*"))
                 .Select(x => new SheetMetadata
@@ -201,7 +203,7 @@ namespace GymStatistics
 
         private void ReadAllCombos()
         {
-            var json = File.ReadAllText(_combosFileName, Encoding.UTF8);
+            var json = File.ReadAllText(Constants.CombosFileName, Encoding.UTF8);
             var combos = JsonConvert.DeserializeObject<Combo[]>(json);
 
             foreach(var c in combos)
