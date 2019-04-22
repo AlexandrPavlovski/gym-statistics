@@ -22,19 +22,19 @@
                                 <DockPanel Margin="10,0,0,0" DockPanel.Dock="Top">
                                     <DockPanel Margin="0,5,0,0" Height="25" DockPanel.Dock="Top">
                                         <Label Content="Упражнение:" Width="90" DockPanel.Dock="Left"/>
-                                        <TextBox Text="{Binding TodayEx.Plan}" ToolTip="План"  Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
-                                        <TextBox Text="{Binding TodayEx.Repetitions}" ToolTip="Подходы" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
-                                        <TextBox Text="{Binding TodayEx.Rest}" ToolTip="Отдых" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
+                                        <TextBox Text="{Binding TodayEx.Plan}" ToolTip="План на следующую тренировку"  Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
+                                        <TextBox Text="{Binding TodayEx.Repetitions}" ToolTip="Подходы на следующую тренировку" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
+                                        <TextBox Text="{Binding TodayEx.Rest}" ToolTip="Отдых на следующую тренировку" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
                                         <ComboBox ItemsSource="{Binding DataContext.AllExercises, RelativeSource={RelativeSource AncestorLevel=2, AncestorType=ItemsControl}}"
                                                   SelectedItem="{Binding TodayEx.Name}" SelectionChanged="Exercise_SelectionChanged"/>
                                     </DockPanel>
                                     <DockPanel Margin="0,5,0,0" Height="25" DockPanel.Dock="Top">
                                         <Label Content="Раньше:" Width="90" DockPanel.Dock="Left"/>
-                                        <TextBox Text="{Binding PrevEx.Plan}" ToolTip="План" IsReadOnly="True" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
-                                        <TextBox Text="{Binding PrevEx.Repetitions}" ToolTip="Подходы" IsReadOnly="True" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
-                                        <TextBox Text="{Binding PrevEx.Feeling}" ToolTip="Чувство" IsReadOnly="True" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
-                                        <TextBox Text="{Binding PrevEx.Date}" ToolTip="Дата" IsReadOnly="True" Width="100" DockPanel.Dock="Left" VerticalContentAlignment="Center"/>
-                                        <TextBox Text="{Binding PrevEx.Work}" ToolTip="Работа" IsReadOnly="True" Margin="5,0,0,0" DockPanel.Dock="Right" VerticalContentAlignment="Center"/>
+                                        <TextBox Text="{Binding PrevEx.Plan}" ToolTip="План предыдущей тренировки" IsReadOnly="True" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center" Foreground="DarkGray"/>
+                                        <TextBox Text="{Binding PrevEx.Repetitions}" ToolTip="Подходы предыдущей тренировки" IsReadOnly="True" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center" Foreground="DarkGray"/>
+                                        <TextBox Text="{Binding PrevEx.Feeling}" ToolTip="Чувство предыдущей тренировки" IsReadOnly="True" Margin="5,0,0,0" Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center" Foreground="DarkGray"/>
+                                        <TextBox Text="{Binding PrevEx.Date}" ToolTip="Дата предыдущей тренировки" IsReadOnly="True" Width="100" DockPanel.Dock="Left" VerticalContentAlignment="Center" Foreground="DarkGray"/>
+                                        <TextBox Text="{Binding PrevEx.Work}" ToolTip="Работа предыдущей тренировки" IsReadOnly="True" Margin="5,0,0,0" DockPanel.Dock="Right" VerticalContentAlignment="Center" Foreground="DarkGray"/>
                                     </DockPanel>
                                 </DockPanel>
                             </DataTemplate>

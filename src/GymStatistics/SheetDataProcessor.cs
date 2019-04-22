@@ -129,7 +129,7 @@ namespace GymStatistics
             SheetTitle = spreadsheetsData.Properties.Title;
 
             return spreadsheetsData.Sheets
-                .Where(x => Regex.IsMatch(x.Properties.Title, @"TR\d+-\d*"))
+                .Where(x => Regex.IsMatch(x.Properties.Title, @"^TR\d+-\d*"))
                 .Select(x => new SheetMetadata
                 {
                     Title = x.Properties.Title,
@@ -141,6 +141,7 @@ namespace GymStatistics
         private int[] GetTrainingDayNumberRowIndices(Sheet sheet)
         {
             return sheet.Data[0].RowData
+                .Where(x => x.Values?[0]?.EffectiveFormat != null)
                 .Select((y, index) => new
                 {
                     index,
@@ -155,6 +156,7 @@ namespace GymStatistics
         private int[] GetComboNameRowIndices(Sheet sheet)
         {
             return sheet.Data[0].RowData
+                .Where(x => x.Values?[0]?.EffectiveFormat != null)
                 .Select((y, index) => new
                 {
                     index,

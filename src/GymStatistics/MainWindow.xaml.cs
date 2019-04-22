@@ -24,6 +24,7 @@ namespace GymStatistics
     {
         private GoogleApiClient _gac;
         private SheetDataProcessor _sdp;
+        private Weekday[] _days;
 
         private AppData _appData;
 
@@ -34,7 +35,7 @@ namespace GymStatistics
 
             InitializeComponent();
 
-            var days = new[]
+            _days = new[]
             {
                 new Weekday
                 {
@@ -52,7 +53,7 @@ namespace GymStatistics
                     Value = DayOfWeek.Friday
                 }
             };
-            dayOfWeekCb.ItemsSource = days;
+            dayOfWeekCb.ItemsSource = _days;
             dayOfWeekCb.DisplayMemberPath = "DisplayText";
             dayOfWeekCb.SelectedValuePath = "Value";
 
@@ -74,6 +75,19 @@ namespace GymStatistics
             _appData.LastOpenedSheetId = sheetId;
             _appData.LastOpenedSheetName = _sdp.SheetTitle;
             _appData.Save();
+
+            dayOfWeekCb.IsEnabled = true;
+            dateTexBox.IsEnabled = true;
+
+            var today = DateTime.Now.Date;
+            var todayDayOfWeekIndex = (int)today.DayOfWeek;
+            var nextTrainingDaysToAdd = todayDayOfWeekIndex > 5 
+                ? ((int)DayOfWeek.Monday - todayDayOfWeekIndex + 7) % 7
+                : todayDayOfWeekIndex % 2 == 0 ? 1 : 0;
+            var nextTrainingDay = today.AddDays(nextTrainingDaysToAdd);
+
+            dateTexBox.Text = nextTrainingDay.ToString("yyyy-MM-dd");
+            dayOfWeekCb.SelectedItem = _days.First(x => x.Value == nextTrainingDay.DayOfWeek);
         }
 
         private void DayOfWeekComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
