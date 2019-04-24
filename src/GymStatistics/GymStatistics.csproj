@@ -90,7 +90,6 @@
     <Compile Include="AppData.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Converters\EmptyStringToBooleanConverter.cs" />
-    <Compile Include="Exceptions\YouDiedException.cs" />
     <Compile Include="Model\Exercise.cs" />
     <Compile Include="Model\Combo.cs" />
     <Compile Include="Model\TrainingDay.cs" />
@@ -100,6 +99,9 @@
       <DependentUpon>ComboView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SheetDataProcessor.PublicMethods.cs" />
+    <Compile Include="UserControls\YouDiedUserControl.xaml.cs">
+      <DependentUpon>YouDiedUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueObjects\Weekday.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -116,6 +118,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UserControls\ComboView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\YouDiedUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

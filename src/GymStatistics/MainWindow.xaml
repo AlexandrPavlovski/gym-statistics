@@ -6,7 +6,8 @@
         xmlns:uc="clr-namespace:GymStatistics.UserControls"
         xmlns:conv="clr-namespace:GymStatistics.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1050" MinHeight="300" MinWidth="600">
+        Title="Помощник тренажировать" Height="600" Width="1050" MinHeight="300" MinWidth="600"
+        PreviewKeyDown="Window_PreviewKeyDown">
     <Window.Resources>
         <conv:EmptyStringToBooleanConverter x:Key="EmptyStringToBooleanConverter" />
     </Window.Resources>

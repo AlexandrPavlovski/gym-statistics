@@ -1,4 +1,5 @@
 ﻿using GymStatistics.Model;
+using GymStatistics.UserControls;
 using GymStatistics.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -27,10 +28,14 @@ namespace GymStatistics
         private SheetDataProcessor _sdp;
         private Weekday[] _days;
 
+        private Key[] _cheatInput;
+
         private AppData _appData;
 
         public MainWindow()
         {
+            _cheatInput = new Key[3];
+
             _gac = new GoogleApiClient();
             _appData = AppData.Build();
 
@@ -64,8 +69,6 @@ namespace GymStatistics
 
         private async void LoadBnt_Click(object sender, RoutedEventArgs e)
         {
-            throw new Exceptions.YouDiedException();
-
             ToggleLoading();
             writeBtn.Visibility = Visibility.Visible;
 
@@ -126,6 +129,19 @@ namespace GymStatistics
         {
             progressBar.Visibility = progressBar.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
             loadingVeiwbox.Visibility = progressBar.Visibility;
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            _cheatInput[0] = _cheatInput[1];
+            _cheatInput[1] = _cheatInput[2];
+            _cheatInput[2] = e.Key;
+
+            if (_cheatInput[0] == Key.G && _cheatInput[1] == Key.U && _cheatInput[2] == Key.D)
+            {
+                Content = null;
+                AddChild(new YouDiedUserControl());
+            }
         }
     }
 }
