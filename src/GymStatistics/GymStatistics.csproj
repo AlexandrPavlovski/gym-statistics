@@ -90,12 +90,13 @@
     <Compile Include="AppData.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Converters\EmptyStringToBooleanConverter.cs" />
+    <Compile Include="Exceptions\YouDiedException.cs" />
     <Compile Include="Model\Exercise.cs" />
     <Compile Include="Model\Combo.cs" />
     <Compile Include="Model\TrainingDay.cs" />
     <Compile Include="Model\SheetMetadata.cs" />
     <Compile Include="SheetDataProcessor.cs" />
-    <Compile Include="ComboView.xaml.cs">
+    <Compile Include="UserControls\ComboView.xaml.cs">
       <DependentUpon>ComboView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SheetDataProcessor.PublicMethods.cs" />
@@ -114,7 +115,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ComboView.xaml">
+    <Page Include="UserControls\ComboView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -152,9 +153,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>

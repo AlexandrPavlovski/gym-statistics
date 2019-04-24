@@ -27,14 +27,15 @@ namespace GymStatistics
         private SheetsService _sheetsService;
         private string _spreadsheetId;
 
-        public static SheetDataProcessor Build(SheetsService sheetsService, string spreadsheetId)
+        public static SheetDataProcessor Build(SheetsService sheetsService, string spreadsheetId, IProgress<int> progress)
         {
             var processor = new SheetDataProcessor();
 
             processor._sheetsService = sheetsService;
             processor._spreadsheetId = spreadsheetId;
 
-            processor.BuildTrainingDays();
+            processor.BuildTrainingDays(progress);
+
             if (File.Exists(Constants.CombosFileName))
             {
                 processor.ReadAllCombos();
@@ -43,14 +44,21 @@ namespace GymStatistics
             {
                 processor.BuildAllCombos();
             }
+            progress.Report(70);
+
             processor.BuildAllExercises();
+            progress.Report(80);
+
             processor.BuildDayMusclesLookup();
+            progress.Report(90);
+
             processor.BuildMuscleExercisesLookup();
+            progress.Report(100);
 
             return processor;
         }
 
-        private void BuildTrainingDays()
+        private void BuildTrainingDays(IProgress<int> progress)
         {
             var sheetsMetadata = GetSheetsMetadata();
 
@@ -58,6 +66,8 @@ namespace GymStatistics
             valuesRequest.Ranges = new Repeatable<string>(sheetsMetadata.Select(x => x.Title));
             var values = valuesRequest.Execute();
 
+            int prgrss = 20;
+            int prgrssStep = 60 / sheetsMetadata.Count();
             var trainingDays = new List<TrainingDay>();
             foreach (var sheet in sheetsMetadata)
             {
@@ -115,6 +125,9 @@ namespace GymStatistics
                     combo.Exercises.Add(exercise);
                     combo.Muscles.Add(rows[i][1].ToString().Trim());
                 }
+
+                prgrss += prgrssStep;
+                progress.Report(prgrss);
             }
 
             TrainingDays = trainingDays.OrderByDescending(x => x.Date).ToArray();

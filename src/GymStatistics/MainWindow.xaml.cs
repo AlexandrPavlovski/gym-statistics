@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -61,12 +62,26 @@ namespace GymStatistics
             sheetNameInput.Text = _appData.LastOpenedSheetName;
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void LoadBnt_Click(object sender, RoutedEventArgs e)
         {
-            var sheetId = sheetIdInput.Text;
+            throw new Exceptions.YouDiedException();
 
-            var sheetsService = await _gac.GetSheetsServiceAsync();
-            _sdp = SheetDataProcessor.Build(sheetsService, sheetId);
+            ToggleLoading();
+            writeBtn.Visibility = Visibility.Visible;
+
+            string sheetId = sheetIdInput.Text;
+
+            IProgress<int> progress = new Progress<int>(percent => progressBar.Value = percent);
+            _sdp = await Task.Factory.StartNew(async () =>
+                {
+                    progress.Report(10);
+
+                    var sheetsService = await _gac.GetSheetsServiceAsync();
+                    progress.Report(20);
+
+                    return SheetDataProcessor.Build(sheetsService, sheetId.ToString(), progress);
+                })
+                .Unwrap();
 
             comboView.Init(_sdp);
 
@@ -81,18 +96,36 @@ namespace GymStatistics
 
             var today = DateTime.Now.Date;
             var todayDayOfWeekIndex = (int)today.DayOfWeek;
-            var nextTrainingDaysToAdd = todayDayOfWeekIndex > 5 
+            var nextTrainingDaysToAdd = todayDayOfWeekIndex > 5
                 ? ((int)DayOfWeek.Monday - todayDayOfWeekIndex + 7) % 7
                 : todayDayOfWeekIndex % 2 == 0 ? 1 : 0;
             var nextTrainingDay = today.AddDays(nextTrainingDaysToAdd);
 
             dateTexBox.Text = nextTrainingDay.ToString("yyyy-MM-dd");
+            dayOfWeekCb.SelectedItem = null;
             dayOfWeekCb.SelectedItem = _days.First(x => x.Value == nextTrainingDay.DayOfWeek);
+
+            ToggleLoading();
+            progressBar.Value = 0;
+        }
+
+        private void WriteBnt_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void DayOfWeekComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            comboView.SetDayOfWeek((DayOfWeek)dayOfWeekCb.SelectedValue);
+            if (dayOfWeekCb.SelectedValue != null)
+            {
+                comboView.SetDayOfWeek((DayOfWeek)dayOfWeekCb.SelectedValue);
+            }
+        }
+
+        private void ToggleLoading()
+        {
+            progressBar.Visibility = progressBar.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            loadingVeiwbox.Visibility = progressBar.Visibility;
         }
     }
 }

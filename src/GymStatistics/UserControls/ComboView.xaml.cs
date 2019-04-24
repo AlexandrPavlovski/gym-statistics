@@ -16,7 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GymStatistics
+namespace GymStatistics.UserControls
 {
     /// <summary>
     /// Interaction logic for UserControl1.xaml
@@ -114,24 +114,14 @@ namespace GymStatistics
 
         public string[] AllExercises { get; set; }
 
-        public ObservableCollection<ComboVM> Combos { get; set; }
-
-        public ComboViewVM()
-        {
-            Combos = new ObservableCollection<ComboVM>();
-        }
+        public ObservableCollection<ComboVM> Combos { get; set; } = new ObservableCollection<ComboVM>();
     }
 
     public class ComboVM
     {
         public string Name { get; set; }
 
-        public ObservableCollection<CompareExerciseVM> Exercises { get; set; }
-
-        public ComboVM()
-        {
-            Exercises = new ObservableCollection<CompareExerciseVM>();
-        }
+        public ObservableCollection<CompareExerciseVM> Exercises { get; set; } = new ObservableCollection<CompareExerciseVM>();
     }
 
     public class CompareExerciseVM
