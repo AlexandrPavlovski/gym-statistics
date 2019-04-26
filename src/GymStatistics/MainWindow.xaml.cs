@@ -1,4 +1,5 @@
-﻿using GymStatistics.Model;
+﻿using Google;
+using GymStatistics.Model;
 using GymStatistics.UserControls;
 using GymStatistics.ValueObjects;
 using System;
@@ -70,12 +71,13 @@ namespace GymStatistics
         private async void LoadBnt_Click(object sender, RoutedEventArgs e)
         {
             ToggleLoading();
-            writeBtn.Visibility = Visibility.Visible;
 
             string sheetId = sheetIdInput.Text;
 
             IProgress<int> progress = new Progress<int>(percent => progressBar.Value = percent);
-            _sdp = await Task.Factory.StartNew(async () =>
+            try
+            {
+                _sdp = await Task.Factory.StartNew(async () =>
                 {
                     progress.Report(10);
 
@@ -85,6 +87,15 @@ namespace GymStatistics
                     return SheetDataProcessor.Build(sheetsService, sheetId.ToString(), progress);
                 })
                 .Unwrap();
+            }
+            catch (GoogleApiException)
+            {
+                ToggleLoading();
+                progressBar.Value = 0;
+
+                MessageBox.Show("Таблица с указанным ID не найдена", "Еггог", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             comboView.Init(_sdp);
 
@@ -108,6 +119,7 @@ namespace GymStatistics
             dayOfWeekCb.SelectedItem = null;
             dayOfWeekCb.SelectedItem = _days.First(x => x.Value == nextTrainingDay.DayOfWeek);
 
+            writeBtn.Visibility = Visibility.Visible;
             ToggleLoading();
             progressBar.Value = 0;
         }
