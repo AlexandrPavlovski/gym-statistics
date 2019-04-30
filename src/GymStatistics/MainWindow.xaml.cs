@@ -75,6 +75,7 @@ namespace GymStatistics
             string sheetId = sheetIdInput.Text;
 
             IProgress<int> progress = new Progress<int>(percent => progressBar.Value = percent);
+            //SheetDataProcessor.Build(await _gac.GetSheetsServiceAsync(), sheetId.ToString(), progress);
             try
             {
                 _sdp = await Task.Factory.StartNew(async () =>
@@ -126,7 +127,7 @@ namespace GymStatistics
 
         private void WriteBnt_Click(object sender, RoutedEventArgs e)
         {
-
+            _sdp.WriteDataToSheet();
         }
 
         private void DayOfWeekComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -151,8 +152,14 @@ namespace GymStatistics
 
             if (_cheatInput[0] == Key.G && _cheatInput[1] == Key.U && _cheatInput[2] == Key.D)
             {
-                Content = null;
-                AddChild(new YouDiedUserControl());
+                if (Tag == null)
+                {
+                    Tag = new YouDiedUserControl();
+                }
+
+                var t = Content;
+                Content = Tag;
+                Tag = t;
             }
         }
     }

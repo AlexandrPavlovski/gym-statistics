@@ -9,6 +9,7 @@ namespace GymStatistics.Model
     public class SheetMetadata
     {
         public string Title;
+        public int? Id;
         public int[] TrainingDayNumberRowIndices;
         public int[] ComboNameRowIndices;
     }

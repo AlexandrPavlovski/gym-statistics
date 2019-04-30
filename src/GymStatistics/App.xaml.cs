@@ -26,7 +26,7 @@ namespace GymStatistics
         {
             Exception e = (Exception)args.ExceptionObject;
             Directory.CreateDirectory("Exception logs");
-            File.WriteAllText($@"Exception logs/{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")}.txt", e.ToString());
+            File.WriteAllText($@"Exception logs/{DateTime.Now.ToString("yyyy-MM-dd hh.mm.ss")}.txt", e.ToString());
         }
     }
 }

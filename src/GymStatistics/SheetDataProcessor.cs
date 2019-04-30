@@ -24,8 +24,9 @@ namespace GymStatistics
 
         public string SheetTitle { get; private set; }
 
-        private SheetsService _sheetsService;
         private string _spreadsheetId;
+        private SheetsService _sheetsService;
+        private IEnumerable<SheetMetadata> _sheetsMetadata;
 
         public static SheetDataProcessor Build(SheetsService sheetsService, string spreadsheetId, IProgress<int> progress)
         {
@@ -60,16 +61,16 @@ namespace GymStatistics
 
         private void BuildTrainingDays(IProgress<int> progress)
         {
-            var sheetsMetadata = GetSheetsMetadata();
+            _sheetsMetadata = GetSheetsMetadata();
 
             var valuesRequest = _sheetsService.Spreadsheets.Values.BatchGet(_spreadsheetId);
-            valuesRequest.Ranges = new Repeatable<string>(sheetsMetadata.Select(x => x.Title));
+            valuesRequest.Ranges = new Repeatable<string>(_sheetsMetadata.Select(x => x.Title));
             var values = valuesRequest.Execute();
 
             int prgrss = 20;
-            int prgrssStep = 60 / sheetsMetadata.Count();
+            int prgrssStep = 60 / _sheetsMetadata.Count();
             var trainingDays = new List<TrainingDay>();
-            foreach (var sheet in sheetsMetadata)
+            foreach (var sheet in _sheetsMetadata)
             {
                 TrainingDay day = null;
                 Combo combo = null;
@@ -142,10 +143,11 @@ namespace GymStatistics
             SheetTitle = spreadsheetsData.Properties.Title;
 
             return spreadsheetsData.Sheets
-                .Where(x => Regex.IsMatch(x.Properties.Title, @"^TR\d+-\d*"))
+                .Where(x => Regex.IsMatch(x.Properties.Title, @"^TR\d+-\d*") && x.Data?[0]?.RowData != null)
                 .Select(x => new SheetMetadata
                 {
                     Title = x.Properties.Title,
+                    Id = x.Properties.SheetId,
                     TrainingDayNumberRowIndices = GetTrainingDayNumberRowIndices(x),
                     ComboNameRowIndices = GetComboNameRowIndices(x)
                 });

@@ -1,9 +1,11 @@
-﻿using GymStatistics.Model;
+﻿using Google.Apis.Sheets.v4.Data;
+using GymStatistics.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.AppendRequest;
 
 namespace GymStatistics
 {
@@ -49,6 +51,54 @@ namespace GymStatistics
                 }
             }
             return null;
+        }
+
+        public void WriteDataToSheet()
+        {
+            IList<IList<object>> t = new List<IList<object>>
+            {
+                new List<object>
+                {
+                    1,2,3,4
+                },
+                new List<object>
+                {
+                    5,6,7,8
+                }
+            };
+
+            var appendRequest = _sheetsService.Spreadsheets.Values.Append(new ValueRange { Values = t }, _spreadsheetId, "TEST");
+            appendRequest.InsertDataOption = InsertDataOptionEnum.INSERTROWS;
+            appendRequest.ValueInputOption = ValueInputOptionEnum.RAW;
+            var response = appendRequest.Execute();
+
+            var updatedRange = response.Updates.UpdatedRange.Split('!')[1];
+            var rowToMerge = int.Parse(updatedRange.Split(':')[0].Substring(1));
+            var id = _sheetsMetadata.First().Id;
+
+            var updateRequest = new BatchUpdateSpreadsheetRequest()
+            {
+                Requests = new List<Request>
+                {
+                    new Request
+                    {
+                        MergeCells = new MergeCellsRequest
+                        {
+                            MergeType = "MERGE_ALL",
+                            Range = new GridRange
+                            {
+                                SheetId = 1083751059,
+                                StartColumnIndex = 0,
+                                EndColumnIndex = 10,
+                                StartRowIndex = 10,
+                                EndRowIndex = 11
+                            }
+                        }
+                    }
+                }
+            };
+            var batchUpdateRequest = _sheetsService.Spreadsheets.BatchUpdate(updateRequest, _spreadsheetId);
+            batchUpdateRequest.Execute();
         }
     }
 }
