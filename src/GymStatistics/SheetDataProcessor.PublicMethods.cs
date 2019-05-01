@@ -164,7 +164,7 @@ namespace GymStatistics
                             {
                                 SheetId = sheetId,
                                 StartColumnIndex = 0,
-                                EndColumnIndex = 10,
+                                EndColumnIndex = 11,
                                 StartRowIndex = LastRowWithDataIndex + 1,
                                 EndRowIndex = LastRowWithDataIndex + 2
                             }
