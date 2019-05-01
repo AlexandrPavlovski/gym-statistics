@@ -125,9 +125,20 @@ namespace GymStatistics
             progressBar.Value = 0;
         }
 
-        private void WriteBnt_Click(object sender, RoutedEventArgs e)
+        private async void WriteBnt_Click(object sender, RoutedEventArgs e)
         {
-            _sdp.WriteDataToSheet();
+            ToggleWritting();
+
+            IProgress<int> progress = new Progress<int>(percent => progressBar.Value = percent);
+            await Task.Factory.StartNew(date =>
+            {
+                progress.Report(50);
+                _sdp.WriteDataToSheet(comboView.ViewModel, date.ToString());
+                progress.Report(100);
+            }, dateTexBox.Text);
+
+            ToggleWritting();
+            progressBar.Value = 0;
         }
 
         private void DayOfWeekComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -140,6 +151,21 @@ namespace GymStatistics
 
         private void ToggleLoading()
         {
+            progressBar.Visibility = progressBar.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            loadingVeiwbox.Visibility = progressBar.Visibility;
+        }
+
+        private void ToggleWritting()
+        {
+            if (loadingTextBlock.Tag == null)
+            {
+                loadingTextBlock.Tag = "Запись...";
+            }
+
+            var t = loadingTextBlock.Tag;
+            loadingTextBlock.Tag = loadingTextBlock.Text;
+            loadingTextBlock.Text = t.ToString();
+
             progressBar.Visibility = progressBar.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
             loadingVeiwbox.Visibility = progressBar.Visibility;
         }

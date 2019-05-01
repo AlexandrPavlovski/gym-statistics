@@ -11,11 +11,11 @@
     <Window.Resources>
         <conv:EmptyStringToBooleanConverter x:Key="EmptyStringToBooleanConverter" />
     </Window.Resources>
-    <Grid>
+    <Grid Margin="10">
         <Canvas>
-            <Label Content="gud" Canvas.Left="3800" Canvas.Top="900" />
+            <Label Content="gud" Canvas.Left="3700" Canvas.Top="800" />
         </Canvas>
-        <Grid Margin="10">
+        <Grid Margin="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -49,12 +49,11 @@
             <uc:ComboView Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="6" x:Name="comboView" />
 
             <Button Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="10" x:Name="writeBtn" Visibility="Hidden" Click="WriteBnt_Click" Height="80" FontSize="50">Записать в таблицу</Button>
-
-            <ProgressBar Grid.Row="0" Grid.Column="0" Grid.RowSpan="10" Grid.ColumnSpan="10" x:Name="progressBar" Visibility="Hidden"/>
-            <Viewbox Grid.Row="0" Grid.Column="0" Grid.RowSpan="10" Grid.ColumnSpan="10" x:Name="loadingVeiwbox" Visibility="Hidden">
-                <TextBlock>Загрузка...</TextBlock>
-            </Viewbox>
-
         </Grid>
+        
+        <ProgressBar Grid.Row="0" Grid.Column="0" Grid.RowSpan="10" Grid.ColumnSpan="10" x:Name="progressBar" Visibility="Hidden"/>
+        <Viewbox Grid.Row="0" Grid.Column="0" Grid.RowSpan="10" Grid.ColumnSpan="10" x:Name="loadingVeiwbox" Visibility="Hidden">
+            <TextBlock x:Name="loadingTextBlock">Загрузка...</TextBlock>
+        </Viewbox>
     </Grid>
 </Window>

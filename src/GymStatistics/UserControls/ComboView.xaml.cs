@@ -23,7 +23,8 @@ namespace GymStatistics.UserControls
     /// </summary>
     public partial class ComboView : UserControl
     {
-        private ComboViewVM _vm;
+        public ComboViewVM ViewModel { get; private set; }
+
         private SheetDataProcessor _sdp;
         private DayOfWeek _selectedDay;
 
@@ -36,13 +37,13 @@ namespace GymStatistics.UserControls
         {
             _sdp = sdp;
 
-            _vm = new ComboViewVM
+            ViewModel = new ComboViewVM
             {
                 AllComboNames = _sdp.MostUsedCombos.Select(x => x.Name).ToArray(),
                 AllExercises = _sdp.AllExercises.Select(x => x.Name).ToArray(),
             };
 
-            itemsControl.DataContext = _vm;
+            itemsControl.DataContext = ViewModel;
         }
 
         public void SetDayOfWeek(DayOfWeek day)
@@ -52,7 +53,7 @@ namespace GymStatistics.UserControls
             Reset();
             foreach (var c in _sdp.GetCombos(day).OrderBy(x => x.OrderInDay))
             {
-                _vm.Combos.Add(new ComboVM()
+                ViewModel.Combos.Add(new ComboVM()
                 {
                     Name = c.Name
                 });
@@ -61,11 +62,11 @@ namespace GymStatistics.UserControls
 
         public void Reset()
         {
-            foreach (var c in _vm.Combos)
+            foreach (var c in ViewModel.Combos)
             {
                 c.Exercises.Clear();
             }
-            _vm.Combos.Clear();
+            ViewModel.Combos.Clear();
         }
 
         private void Combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -104,6 +105,12 @@ namespace GymStatistics.UserControls
             compareExerciseVM.PrevEx.Feeling = currEx?.Feeling ?? "N/A";
             compareExerciseVM.PrevEx.Date = currEx?.Date.ToString("yyyy-MM-dd") ?? "N/A";
             compareExerciseVM.PrevEx.Work = currEx?.Work ?? "N/A";
+
+            // not visible in editor
+            compareExerciseVM.TodayEx.Muscle = currEx?.Muscle;
+            compareExerciseVM.TodayEx.Best = currEx?.Best;
+            compareExerciseVM.TodayEx.Mode = currEx?.Mode;
+            compareExerciseVM.TodayEx.Gym = currEx?.Gym;
         }
     }
 
@@ -142,5 +149,10 @@ namespace GymStatistics.UserControls
         public string Plan { get; set; }
         public string Date { get; set; }
         public string Feeling { get; set; }
+
+        public string Muscle;
+        public string Best;
+        public string Mode;
+        public string Gym;
     }
 }

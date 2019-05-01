@@ -23,6 +23,7 @@ namespace GymStatistics
         public Dictionary<DayOfWeek, string[]> DayMusclesLookup { get; private set; }
 
         public string SheetTitle { get; private set; }
+        public int LastRowWithDataIndex { get; private set; }
 
         private string _spreadsheetId;
         private SheetsService _sheetsService;
@@ -77,7 +78,10 @@ namespace GymStatistics
                 int trainingDayOrder = 1;
                 int comboOrder = 0;
                 int exerciseOrder = 0;
+
                 var rows = values.ValueRanges.First(x => x.Range.Contains(sheet.Title)).Values;
+                if (rows == null) continue;
+
                 for (int i = 0; i < rows.Count; i++)
                 {
                     if (sheet.TrainingDayNumberRowIndices.Contains(i))
@@ -131,6 +135,8 @@ namespace GymStatistics
                 progress.Report(prgrss);
             }
 
+            LastRowWithDataIndex = values.ValueRanges.First(x => x.Range.Contains(_sheetsMetadata.First().Title)).Values?.Count ?? -1;
+
             TrainingDays = trainingDays.OrderByDescending(x => x.Date).ToArray();
         }
 
@@ -143,7 +149,7 @@ namespace GymStatistics
             SheetTitle = spreadsheetsData.Properties.Title;
 
             return spreadsheetsData.Sheets
-                .Where(x => Regex.IsMatch(x.Properties.Title, @"^TR\d+-\d*") && x.Data?[0]?.RowData != null)
+                .Where(x => Regex.IsMatch(x.Properties.Title, @"^TR\d+-\d*"))
                 .Select(x => new SheetMetadata
                 {
                     Title = x.Properties.Title,
@@ -155,32 +161,36 @@ namespace GymStatistics
 
         private int[] GetTrainingDayNumberRowIndices(Sheet sheet)
         {
-            return sheet.Data[0].RowData
-                .Where(x => x.Values?[0]?.EffectiveFormat != null)
-                .Select((y, index) => new
-                {
-                    index,
-                    color = y.Values[0].EffectiveFormat.TextFormat.ForegroundColor,
-                    isBold = y.Values[0].EffectiveFormat.TextFormat.Bold ?? false
-                })
-                .Where(y => y.color.Red == null && y.color.Green == null && y.color.Blue != null && y.isBold)
-                .Select(y => y.index)
-                .ToArray();
+            return sheet.Data[0].RowData == null
+                ? new int[0]
+                : sheet.Data[0].RowData
+                    .Where(x => x.Values?[0]?.EffectiveFormat != null)
+                    .Select((y, index) => new
+                    {
+                        index,
+                        color = y.Values[0].EffectiveFormat.TextFormat.ForegroundColor,
+                        isBold = y.Values[0].EffectiveFormat.TextFormat.Bold ?? false
+                    })
+                    .Where(y => y.color.Red == null && y.color.Green == null && y.color.Blue != null && y.isBold)
+                    .Select(y => y.index)
+                    .ToArray();
         }
 
         private int[] GetComboNameRowIndices(Sheet sheet)
         {
-            return sheet.Data[0].RowData
-                .Where(x => x.Values?[0]?.EffectiveFormat != null)
-                .Select((y, index) => new
-                {
-                    index,
-                    color = y.Values[0].EffectiveFormat.BackgroundColor,
-                    isBold = y.Values[0].EffectiveFormat.TextFormat.Bold ?? false
-                })
-                .Where(y => y.color.Red >= 0.8 && y.color.Red <= 0.9 && y.isBold)
-                .Select(y => y.index)
-                .ToArray();
+            return sheet.Data[0].RowData == null
+                ? new int[0]
+                : sheet.Data[0].RowData
+                    .Where(x => x.Values?[0]?.EffectiveFormat != null)
+                    .Select((y, index) => new
+                    {
+                        index,
+                        color = y.Values[0].EffectiveFormat.BackgroundColor,
+                        isBold = y.Values[0].EffectiveFormat.TextFormat.Bold ?? false
+                    })
+                    .Where(y => y.color.Red >= 0.8 && y.color.Red <= 0.9 && y.isBold)
+                    .Select(y => y.index)
+                    .ToArray();
         }
 
         private void BuildAllCombos()
