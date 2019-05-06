@@ -24,6 +24,7 @@ namespace GymStatistics
 
         public string SheetTitle { get; private set; }
         public int LastRowWithDataIndex { get; private set; }
+        public List<string> ColumnNames { get; private set; }
 
         private string _spreadsheetId;
         private SheetsService _sheetsService;
@@ -136,6 +137,7 @@ namespace GymStatistics
             }
 
             LastRowWithDataIndex = values.ValueRanges.First(x => x.Range.Contains(_sheetsMetadata.First().Title)).Values?.Count ?? -1;
+            ColumnNames = values.ValueRanges.First(x => x.Range.Contains(_sheetsMetadata.Last().Title)).Values[1].Skip(1).Select(x => x.ToString()).ToList();
 
             TrainingDays = trainingDays.OrderByDescending(x => x.Date).ToArray();
         }

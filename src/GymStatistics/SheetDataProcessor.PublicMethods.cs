@@ -55,39 +55,33 @@ namespace GymStatistics
         }
 
         public void WriteDataToSheet(ComboViewVM comboViewVM, string date)
-        {            
+        {
+            var borders = new Borders
+            {
+                Bottom = new Border { Width = 1, Style = "SOLID" },
+                Left = new Border { Width = 1, Style = "SOLID" },
+                Right = new Border { Width = 1, Style = "SOLID" },
+                Top = new Border { Width = 1, Style = "SOLID" }
+            };
             var trainingDayNumberCellFormat = new CellFormat
             {
                 TextFormat = new TextFormat { Bold = true, ForegroundColor = new Color { Blue = 1f } },
-                Borders = new Borders
-                {
-                    Bottom = new Border { Width = 1, Style = "SOLID" },
-                    Left = new Border { Width = 1, Style = "SOLID" },
-                    Right = new Border { Width = 1, Style = "SOLID" },
-                    Top = new Border { Width = 1, Style = "SOLID" }
-                }
+                Borders = borders
             };
             var comboHeaderCellFormat = new CellFormat
             {
                 BackgroundColor = new Color { Blue = 0.8509804f, Green = 0.8509804f, Red = 0.8509804f },
                 TextFormat = new TextFormat { Bold = true },
-                Borders = new Borders
-                {
-                    Bottom = new Border { Width = 1, Style = "SOLID" },
-                    Left = new Border { Width = 1, Style = "SOLID" },
-                    Right = new Border { Width = 1, Style = "SOLID" },
-                    Top = new Border { Width = 1, Style = "SOLID" }
-                }
+                Borders = borders
+            };
+            var dateCellFormat = new CellFormat
+            {
+                NumberFormat = new NumberFormat { Type = "DATE", Pattern = "yyyy-MM-dd" },
+                Borders = borders
             };
             var regularCelFormat = new CellFormat
             {
-                Borders = new Borders
-                {
-                    Bottom = new Border { Width = 1, Style = "SOLID" },
-                    Left = new Border { Width = 1, Style = "SOLID" },
-                    Right = new Border { Width = 1, Style = "SOLID" },
-                    Top = new Border { Width = 1, Style = "SOLID" }
-                }
+                Borders = borders
             };
 
             List<RowData> rowsData = new List<RowData>(8);
@@ -101,23 +95,15 @@ namespace GymStatistics
 
             foreach (var combo in comboViewVM.Combos)
             {
-                rowsData.Add(new RowData
+                var row = new RowData
                 {
                     Values = new List<CellData>
                     {
-                        GetSellData(combo.Name, comboHeaderCellFormat),
-                        GetSellData("Мышцы", comboHeaderCellFormat),
-                        GetSellData("Отдых", comboHeaderCellFormat),
-                        GetSellData("Подходы", comboHeaderCellFormat),
-                        GetSellData("Работа", comboHeaderCellFormat),
-                        GetSellData("План", comboHeaderCellFormat),
-                        GetSellData("Best", comboHeaderCellFormat),
-                        GetSellData("Дата", comboHeaderCellFormat),
-                        GetSellData("Чувство", comboHeaderCellFormat),
-                        GetSellData("Режим", comboHeaderCellFormat),
-                        GetSellData("Зал", comboHeaderCellFormat)
+                        GetSellData(combo.Name, comboHeaderCellFormat)
                     }
-                });
+                };
+                ColumnNames.ForEach(x => row.Values.Add(GetSellData(x, comboHeaderCellFormat)));
+                rowsData.Add(row);
 
                 foreach (var exercise in combo.Exercises)
                 {
@@ -132,7 +118,11 @@ namespace GymStatistics
                             GetSellData(string.Empty),
                             GetSellData(exercise.TodayEx.Plan),
                             GetSellData(exercise.TodayEx.Best),
-                            GetSellData(date),
+                            new CellData
+                            {
+                                UserEnteredValue = new ExtendedValue { NumberValue = DateTime.Parse(date).ToOADate() },
+                                UserEnteredFormat = dateCellFormat
+                            },
                             GetSellData(string.Empty),
                             GetSellData(exercise.TodayEx.Mode),
                             GetSellData(exercise.TodayEx.Gym)
