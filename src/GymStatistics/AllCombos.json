@@ -72,24 +72,6 @@
     ]
   },
   {
-    "Name": "Мышцы Груди Combo#4v2",
-    "OrderInDay": "0",
-    "Exercises": [
-      {
-        "Name": "Жим гантелей на наклонной скамье",
-        "Muscle": "Chest"
-      },
-      {
-        "Name": "Разводка гантелей на скамье",
-        "Muscle": "Chest"
-      },
-      {
-        "Name": "Блочные ворота тяга вбок",
-        "Muscle": "Chest"
-      }
-    ]
-  },
-  {
     "Name": "Мышцы Бицепса Combo#1",
     "OrderInDay": "1",
     "Exercises": [
@@ -308,25 +290,7 @@
         "Muscle": "Deltoideus"
       }
     ]
-  },
-  {
-    "Name": "Дельтовидные мышцы Combo#2v2",
-    "OrderInDay": "0",
-    "Exercises": [
-      {
-        "Name": "Жим Арнольда сидя",
-        "Muscle": "Deltoideus"
-      },
-      {
-        "Name": "Горизонтальная тяга верхнего блока с веревочной рукоятью",
-        "Muscle": "Deltoideus"
-      },
-      {
-        "Name": "Подъемы гантелей на наклонной скамье",
-        "Muscle": "Deltoideus"
-      }
-    ]
-  },
+  },  
   {
     "Name": "Дельтовидные мышцы Combo#3",
     "OrderInDay": "0",
