@@ -12,5 +12,6 @@ namespace GymStatistics.Model
         public string Name;
         public List<Combo> Combos = new List<Combo>();
         public DateTime Date;
+        public bool IsPlanned; // for days planned in advanced and not yet performed
     }
 }

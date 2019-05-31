@@ -18,7 +18,7 @@ namespace GymStatistics.Model
         public string Best;
         public DateTime Date;
         public string Feeling;
-        public string Mode = "Разминка";
-        public string Gym = "Империя силы";
+        public string Mode;
+        public string Gym;
     }
 }

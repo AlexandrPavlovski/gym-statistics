@@ -93,24 +93,23 @@ namespace GymStatistics.UserControls
         {
             var compareExerciseVM = (sender as ComboBox).DataContext as CompareExerciseVM;
 
-            var currEx = _sdp.GetPrevExercise(compareExerciseVM.TodayEx.Name, 0);
-            //var prevEx = _sdp.GetPrevExercise(compareExerciseVM.TodayEx.Name);
+            var prevEx = _sdp.GetPrevExercise(compareExerciseVM.TodayEx.Name, 0);
 
-            compareExerciseVM.TodayEx.Plan = currEx?.Plan;
-            compareExerciseVM.TodayEx.Repetitions = currEx?.Repetitions;
-            compareExerciseVM.TodayEx.Rest = currEx?.Rest;
+            compareExerciseVM.TodayEx.Plan = prevEx?.Plan;
+            compareExerciseVM.TodayEx.Repetitions = prevEx?.Repetitions;
+            compareExerciseVM.TodayEx.Rest = prevEx?.Rest;
 
-            compareExerciseVM.PrevEx.Plan = currEx?.Plan ?? "N/A";
-            compareExerciseVM.PrevEx.Repetitions = currEx?.Repetitions ?? "N/A";
-            compareExerciseVM.PrevEx.Feeling = currEx?.Feeling ?? "N/A";
-            compareExerciseVM.PrevEx.Date = currEx?.Date.ToString("yyyy-MM-dd") ?? "N/A";
-            compareExerciseVM.PrevEx.Work = currEx?.Work ?? "N/A";
+            compareExerciseVM.PrevEx.Plan = prevEx?.Plan ?? "N/A";
+            compareExerciseVM.PrevEx.Repetitions = prevEx?.Repetitions ?? "N/A";
+            compareExerciseVM.PrevEx.Feeling = prevEx?.Feeling ?? "N/A";
+            compareExerciseVM.PrevEx.Date = prevEx?.Date.ToString("yyyy-MM-dd") ?? "N/A";
+            compareExerciseVM.PrevEx.Work = prevEx?.Work ?? "N/A";
 
             // not visible in editor
-            compareExerciseVM.TodayEx.Muscle = currEx?.Muscle;
-            compareExerciseVM.TodayEx.Best = currEx?.Best;
-            compareExerciseVM.TodayEx.Mode = currEx?.Mode;
-            compareExerciseVM.TodayEx.Gym = currEx?.Gym;
+            compareExerciseVM.TodayEx.Muscle = prevEx?.Muscle;
+            compareExerciseVM.TodayEx.Best = prevEx?.Best;
+            compareExerciseVM.TodayEx.Mode = prevEx?.Mode;
+            compareExerciseVM.TodayEx.Gym = prevEx?.Gym;
         }
     }
 

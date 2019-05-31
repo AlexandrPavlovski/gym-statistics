@@ -4,9 +4,6 @@ using GymStatistics.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Google.Apis.Sheets.v4.SpreadsheetsResource.ValuesResource.AppendRequest;
 
 namespace GymStatistics
 {
@@ -15,16 +12,22 @@ namespace GymStatistics
         public IEnumerable<Combo> GetCombos(DayOfWeek day)
         {
             var muscles = DayMusclesLookup[day];
-            var prevDay = TrainingDays
-                    .Where(x => x.Date.DayOfWeek == day)
-                    .First();
+            //var prevDay = TrainingDays
+            //        .Where(x => x.Date.DayOfWeek == day)
+            //        .First();
 
             foreach (var m in muscles)
             {
                 var combos = MostUsedCombos
                     .Where(x => x.Muscles.Contains(m));
+                
+                //var prevCombo = prevDay.Combos
+                //    .First(x => x.Muscles.Contains(m))
+                //    .Name;
 
-                var prevCombo = prevDay.Combos
+                var prevCombo = TrainingDays
+                    .First(x => x.Combos.Any(y => y.Muscles.Contains(m)))
+                    .Combos
                     .First(x => x.Muscles.Contains(m))
                     .Name;
 

@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace GymStatistics
 {
@@ -88,6 +87,11 @@ namespace GymStatistics
                     if (sheet.TrainingDayNumberRowIndices.Contains(i))
                     {
                         comboOrder = 0;
+                        if (day != null)
+                        {
+                            day.IsPlanned = day.Combos.All(x => x.Exercises.All(y => !string.IsNullOrWhiteSpace(y.Work)));
+                        }
+
                         day = new TrainingDay
                         {
                             Oreder = trainingDayOrder++,
@@ -126,6 +130,8 @@ namespace GymStatistics
                         Best = rows[i][6].ToString().Trim(),
                         Date = day.Date,
                         Feeling = rows[i][8].ToString(),
+                        Mode = rows[i][9].ToString(),
+                        Gym = rows[i][10].ToString(),
                         Order = exerciseOrder++
                     };
                     combo.Exercises.Add(exercise);
