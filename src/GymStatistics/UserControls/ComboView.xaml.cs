@@ -93,21 +93,22 @@ namespace GymStatistics.UserControls
         {
             var compareExerciseVM = (sender as ComboBox).DataContext as CompareExerciseVM;
 
-            var prevEx = _sdp.GetPrevExercise(compareExerciseVM.TodayEx.Name, 0);
+            var prevEx = _sdp.GetPreviousExercise(compareExerciseVM.TodayEx.Name);
 
             compareExerciseVM.TodayEx.Plan = prevEx?.Plan;
             compareExerciseVM.TodayEx.Repetitions = prevEx?.Repetitions;
             compareExerciseVM.TodayEx.Rest = prevEx?.Rest;
+            compareExerciseVM.TodayEx.Best = prevEx?.Best;
 
             compareExerciseVM.PrevEx.Plan = prevEx?.Plan ?? "N/A";
             compareExerciseVM.PrevEx.Repetitions = prevEx?.Repetitions ?? "N/A";
             compareExerciseVM.PrevEx.Feeling = prevEx?.Feeling ?? "N/A";
             compareExerciseVM.PrevEx.Date = prevEx?.Date.ToString("yyyy-MM-dd") ?? "N/A";
             compareExerciseVM.PrevEx.Work = prevEx?.Work ?? "N/A";
+            compareExerciseVM.PrevEx.Best = prevEx?.Best ?? "N/A";
 
             // not visible in editor
             compareExerciseVM.TodayEx.Muscle = prevEx?.Muscle;
-            compareExerciseVM.TodayEx.Best = prevEx?.Best;
             compareExerciseVM.TodayEx.Mode = prevEx?.Mode;
             compareExerciseVM.TodayEx.Gym = prevEx?.Gym;
         }
@@ -148,9 +149,9 @@ namespace GymStatistics.UserControls
         public string Plan { get; set; }
         public string Date { get; set; }
         public string Feeling { get; set; }
+        public string Best { get; set; }
 
         public string Muscle;
-        public string Best;
         public string Mode;
         public string Gym;
     }

@@ -12,18 +12,11 @@ namespace GymStatistics
         public IEnumerable<Combo> GetCombos(DayOfWeek day)
         {
             var muscles = DayMusclesLookup[day];
-            //var prevDay = TrainingDays
-            //        .Where(x => x.Date.DayOfWeek == day)
-            //        .First();
 
             foreach (var m in muscles)
             {
                 var combos = MostUsedCombos
                     .Where(x => x.Muscles.Contains(m));
-                
-                //var prevCombo = prevDay.Combos
-                //    .First(x => x.Muscles.Contains(m))
-                //    .Name;
 
                 var prevCombo = TrainingDays
                     .First(x => x.Combos.Any(y => y.Muscles.Contains(m)))
@@ -40,14 +33,14 @@ namespace GymStatistics
             }
         }
 
-        public Exercise GetPrevExercise(string exerciseName, int reversedOrder = 1)
+        public Exercise GetPreviousExercise(string exerciseName, int skip = 0)
         {
             int foundCount = 0;
             foreach (var ex in TrainingDays.SelectMany(x => x.Combos).SelectMany(x => x.Exercises))
             {
                 if (ex.Name == exerciseName)
                 {
-                    if (foundCount == reversedOrder)
+                    if (foundCount == skip)
                     {
                         return ex;
                     }
@@ -158,8 +151,8 @@ namespace GymStatistics
                                 SheetId = sheetId,
                                 StartColumnIndex = 0,
                                 EndColumnIndex = 11,
-                                StartRowIndex = LastRowWithDataIndex + 1,
-                                EndRowIndex = LastRowWithDataIndex + 2
+                                StartRowIndex = LastRowWithDataIndex,
+                                EndRowIndex = LastRowWithDataIndex + 1
                             }
                         }
                     },

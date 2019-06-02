@@ -142,7 +142,7 @@ namespace GymStatistics
                 progress.Report(prgrss);
             }
 
-            LastRowWithDataIndex = values.ValueRanges.First(x => x.Range.Contains(_sheetsMetadata.First().Title)).Values?.Count ?? -1;
+            LastRowWithDataIndex = values.ValueRanges.First(x => x.Range.Contains(_sheetsMetadata.First().Title)).Values?.Count ?? 0;
             ColumnNames = values.ValueRanges.First(x => x.Range.Contains(_sheetsMetadata.Last().Title)).Values[1].Skip(1).Select(x => x.ToString()).ToList();
 
             TrainingDays = trainingDays.OrderByDescending(x => x.Date).ToArray();
